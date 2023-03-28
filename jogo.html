@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Jogo de Penaltis</title>
+    <style>
+        body {
+            background-image: url('assets/estadio.jpg');
+            background-size: cover;
+            text-align: center;
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        #play-button {
+            width: 300px;
+            height: 50px;
+            margin: 0 auto;
+            position: absolute;
+            top: 250px;
+            padding: 30px;
+            background-color: #ffffff;
+            color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <h1>Jogo de Penaltis</h1>
+    <button id="play-button">Jogar</button>
+    <script src="phaser.min.js"></script>
+    <script src="game.js"></script>
+    <script>
+        document.getElementById("play-button").addEventListener("click", function(){
+            window.location.href = "defender.html";
+        
+        });
+    </script>
+   
+</body>
+
+<script type="text/javascript">
+
+    var config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 300 },
+                    debug: false
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        var dif = Math.abs(score[0]-score[1]);
+
+        var game = new Phaser.Game(config);
+
+        function preload(){
+        
+        }
+
+        function create(){
+
+        }
+
+        function resultado(){
+            if(ronda == 5 && dif == 0){
+                while(dif == 0){
+                //continua
+                }
+            }
+        }
+
+        function update(){
+            if (gameOver) {
+                return;
+            }
+
+        }
+</script>
+</html>
