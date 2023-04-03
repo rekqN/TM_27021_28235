@@ -16,12 +16,12 @@
             cursor: pointer;
         }
 
-        #ready-button {
+        #cheatarget-button {
             position: absolute;
-            top: 500px;
-            left: 530px;
-            padding: 25px;
-            background-color: #ffffff;
+            top: 210px;
+            left: 2px;
+            padding: 5px;
+            background-color: #000000;
             color: #000000;
             border-radius: 15px;
             cursor: pointer;
@@ -41,7 +41,6 @@
 <body>
     <div id="game-container"></div>
     <button id="refresh-button">Refresh</button>
-    <button id="ready-button">Pronto</button>
     <button id="cheatarget-button"></button>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
@@ -137,29 +136,49 @@
             destinoY = Phaser.Math.Between(118, 307);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY);
 
-            velocidade = getRandomInt(300, 1000);
+            velocidade = getRandomInt(400, 1000);
             duracao = distancia / velocidade * 1000;
 
             //audio.setStartDelay(duracao);
             scoreText = this.add.text(350, 16, score[0] + ":" + score[1], {
                 fontSize: '64px', fill: '#FFFFFF'
             });
+        
+           
+            cheatbola = this.add.image(destinoX, destinoY, 'cheatball');
+            cheatbola.visible = false;
 
+            var botao = document.getElementById('cheatarget-button');
+            botao.addEventListener('click', () => {
+                adicionarCheatarget();
+            });
+
+            function adicionarCheatarget(){
+                cheatbola.visible = true;
+
+                setTimeout(() => {
+                    cheatbola.visible = false;
+                }, 500);   
+            }
+            
+            
             this.tweens.add({
                 targets: bola,
                 x: destinoX,
                 y: destinoY,
                 duration: duracao,
+                delay: 2000,
                 ease: 'Linear',
                 onComplete: function () {
                     update_score(bola);
                 }
             });
 
-            document.getElementById('ready-button').addEventListener('click', function () {
-            }, this);
+            setTimeout(() => {
+                this.physics.add.collider(player, bola, hitBola, null, this);
+            }, duracao);
+            
 
-            cheatbola = this.add.sprite(destinoX, destinoY, 'cheatball')
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -188,7 +207,8 @@
             this.physics.add.collider(player, platform_gk);
             this.physics.add.collider(bola, platform_gk);
             this.physics.add.collider(cristiano, platform_pk);
-            this.physics.add.collider(player, bola, hitBola, null, this);
+        
+            
 
             this.text = this.add.text(0, 0, '');
             this.input.on('pointermove', (pointer) => {
@@ -196,7 +216,7 @@
                 this.text.setText(`x: ${pointer.x}, y: ${pointer.y}`);
             });
 
-        }
+        } // fim da função create
 
 
         function hitBola(player, bola) {
@@ -255,8 +275,6 @@
             if (cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(-330);
             }
-
-
 
 
         }
