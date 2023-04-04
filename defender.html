@@ -176,15 +176,24 @@
                     }
                 },
                 */
+               /*
+               onUpdate: function(){
+                
+               if(distancia <= 20){
+                this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
+               }
+            },
+            */
                 onComplete: function () {
                     
                     update_score(bola);
                 }
             });
 
+            
             setTimeout(() => {
                 this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
-            }, duracao);
+            }, 1950 + duracao);
             
 
             this.anims.create({
@@ -234,14 +243,14 @@
 
         } // fim da função create
 
-        if(Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY) < 20){
+    //   if(Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY) < 20){
         function hitBola(goalkeeper, bola) {
             goalkeeper.physics.pause();
             //bola.physics.pause();
             goalkeeper.anims.play('turn');
             Defended = true;
         }
-    }
+    // }
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
@@ -249,7 +258,7 @@
         }
 
         function update_score(bola) {
-            if (Defended == false && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
+            if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
                 score[1]++;
                 scoreText.setText(score[0] + ":" + score[1]);
                 estadio.setTexture('campogolo');
@@ -268,9 +277,12 @@
         */
 
         function update() {
+            /*
             if (Defended) {
                 return;
             }
+            */
+
             //  /*
             if(cursors.up.isDown){
                 goalkeeper.setVelocityY(-100);
