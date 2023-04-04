@@ -105,9 +105,7 @@
             this.load.image('baliza', 'assets/baliza.png');
             this.load.image('ronaldoo', 'assets/ronaldoo.png');
             this.load.audio('Goal', ['assets/Goal.mp3']);
-            this.load.image('gk', 'assets/gk.png');
-            this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-            this.load.spritesheet('gk_red', 'assets/gk_red.png', {frameWidth: 128, frameHeight: 128});
+            this.load.spritesheet('gk_red', 'assets/gk_red.png', {frameWidth: 127, frameHeight: 127});
         }
 
         function create() {
@@ -183,11 +181,10 @@
 
             this.anims.create({
                 key: 'left',
-                frames: this.anims.generateFrameNumbers('gk_red', { start: 1, end: 3 }),
-                frameRate: 5
-                
+                frames: this.anims.generateFrameNumbers('gk_red', { start: 1, end: 2 }),
+                frameRate: 2,
+                repeat: -1
             });
-
 
             this.anims.create({
                 key: 'turn',
@@ -195,12 +192,22 @@
                 frameRate: 20
             });
 
-
             this.anims.create({
                 key: 'right',
-                frames: this.anims.generateFrameNumbers('gk_red', { start: 3, end: 5 }),
-                frameRate: 10
+                frames: this.anims.generateFrameNumbers('gk_red', { start: 4, end: 5 }),
+                frameRate: 2,
+                repeat: -1
             });
+
+            var seq = [0, 3];
+
+            this.anims.create({
+                key: 'jump',
+                //frames: seq.map(frame => ({ key: 'gk_red', frame: frame })),
+                frames: [{ key: 'gk_red', frame: 3 }],
+                frameRate: 5,
+                repeat: -1
+                }); 
 
             cursors = this.input.keyboard.createCursorKeys();
 
@@ -256,7 +263,14 @@
             if (Defended) {
                 return;
             }
+            //  /*
+            if(cursors.up.isDown){
+                goalkeeper.setVelocityY(-100);
 
+                goalkeeper.anims.play('jump', true);
+
+            }
+            //  */
             if (cursors.left.isDown) {
                 goalkeeper.setVelocityX(-200);
 
@@ -273,10 +287,20 @@
                 goalkeeper.anims.play('turn');
             }
 
-            if (cursors.up.isDown && goalkeeper.body.touching.down) {
-                goalkeeper.setVelocityY(-330);
-            }
+        //   /*
+            if (cursors.up.isDown && !cursors.left.isDown && !cursors.right.isDown && !cursors.down.isDown) {
+                goalkeeper.setVelocityY(-200);
 
+                goalkeeper.anims.play('jump', true);
+                
+            }
+        //   */
+
+        //   /*
+            if(cursors.up.isDown && bola.body.touching.down){
+                goalkeeper.setVelocityY(-100);
+            }
+        //   */
 
         }
 
