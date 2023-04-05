@@ -27,6 +27,18 @@
             cursor: pointer;
         }
 
+        #cheatspeed-button {
+            position: absolute;
+            top: 210px;
+            left: 748px;
+            padding: 5px;
+            background-color: #000000;
+            color: #000000;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+
     </style>
 
 
@@ -42,6 +54,7 @@
     <div id="game-container"></div>
     <button id="refresh-button">Refresh</button>
     <button id="cheatarget-button"></button>
+    <button id="cheatspeed-button"></button>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
@@ -150,8 +163,8 @@
             cheatbola = this.add.image(destinoX, destinoY, 'cheatball');
             cheatbola.visible = false;
 
-            var botao = document.getElementById('cheatarget-button');
-            botao.addEventListener('click', () => {
+            var botao1 = document.getElementById('cheatarget-button');
+            botao1.addEventListener('click', () => {
                 adicionarCheatarget();
             });
 
@@ -161,6 +174,23 @@
                 setTimeout(() => {
                     cheatbola.visible = false;
                 }, 500);   
+            }
+
+            var botao2 = document.getElementById('cheatspeed-button');
+            botao2.addEventListener('click', adicionarCheatspeed);
+            
+
+            function adicionarCheatspeed(){
+                var prob_speedbaixa = 80;
+                var prob_sppedalta = 81;
+                var numAleatorio = Phaser.Math.Between(1, 100);
+                if (numAleatorio <= prob_speedbaixa) {
+                    velocidade = 100;
+                } 
+                else {
+                
+                velocidade = 3000;
+                }
             }
             
             
@@ -391,6 +421,8 @@
                     goalkeeper.setVelocityY(-300); 
                 }
             }
+
+            
             
         }
 
