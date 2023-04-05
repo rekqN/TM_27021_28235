@@ -109,13 +109,12 @@
         var game = new Phaser.Game(config);
 
         function preload() {
-            this.load.image('campo', 'assets/campo.png');
-            this.load.image('campogolo', 'assets/campogolo.png');
+            this.load.image('campo_blue', 'assets/campo_blue.png');
+            this.load.image('campogolo_blue', 'assets/campogolo_blue.png');
             this.load.image('ground', 'assets/platform.png');
             this.load.image('ball', 'assets/ball.png');
             this.load.image('cheatball', 'assets/cheatball.png');
             this.load.image('fireball', 'assets/fireball.png');
-            this.load.image('baliza', 'assets/baliza.png');
             this.load.image('ronaldoo', 'assets/ronaldoo.png');
             this.load.audio('Goal', ['assets/Goal.mp3']);
             this.load.audio('Apito', ['assets/apito.mp3']);
@@ -129,7 +128,7 @@
             platform_pk = this.physics.add.staticGroup();
             platform_gk.create(400, 360, 'ground').setScale(2).refreshBody();
             platform_pk.create(400, 625, 'ground').setScale(2).refreshBody();
-            estadio = this.add.sprite(400, 300, 'campo');
+            estadio = this.add.sprite(400, 300, 'campo_blue');
             audio = this.sound.add('Goal');
             arbitro = this.sound.add('Apito');
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_red');
@@ -326,7 +325,7 @@
             if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
                 score[1]++;
                 scoreText.setText(score[0] + ":" + score[1]);
-                estadio.setTexture('campogolo');
+                estadio.setTexture('campogolo_blue');
                 audio.play();
             }
             else {
