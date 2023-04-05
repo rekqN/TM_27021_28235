@@ -242,7 +242,10 @@
             });
 
             var seq = [0, 3];
+            
+            var podePular = true;
 
+            
             this.anims.create({
                 key: 'jump',
                 //frames: seq.map(frame => ({ key: 'gk_red', frame: frame })),
@@ -250,8 +253,7 @@
                 frameRate: 5,
                 repeat: -1
                 }); 
-
-            this.podePular = true;
+        
 
             cursors = this.input.keyboard.createCursorKeys();
 
@@ -363,18 +365,31 @@
 
         //   /*
             if(cursors.up.isDown && goalkeeper.body.touching.down){
-                goalkeeper.setVelocityY(-100);
+                goalkeeper.setVelocityY(-330);
             }
         //   */
+            if(goalkeeper.y < 170){
+                goalkeeper.setY(170);
+            }
+
+            // fazer com que o gk só salta uma vez: 
 
             if(goalkeeper.body.touching.down){
                 this.podePular = true;
             }
 
             if(cursors.up.isDown && this.podePular){
-                goalkeeper.setVelocityY(-500);
+                goalkeeper.setVelocityY(-300);
                 this.podePular = false;
             }
+
+            var toca_chao = goalkeeper.body.touching.down;
+            if(toca_chao){
+                if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
+                    goalkeeper.setVelocityY(-300); 
+                }
+            }
+            
         }
 
 
