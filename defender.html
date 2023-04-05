@@ -251,6 +251,8 @@
                 repeat: -1
                 }); 
 
+            this.podePular = true;
+
             cursors = this.input.keyboard.createCursorKeys();
 
 
@@ -360,11 +362,19 @@
         //   */
 
         //   /*
-            if(cursors.up.isDown && bola.body.touching.down){
+            if(cursors.up.isDown && goalkeeper.body.touching.down){
                 goalkeeper.setVelocityY(-100);
             }
         //   */
 
+            if(goalkeeper.body.touching.down){
+                this.podePular = true;
+            }
+
+            if(cursors.up.isDown && this.podePular){
+                goalkeeper.setVelocityY(-500);
+                this.podePular = false;
+            }
         }
 
 
