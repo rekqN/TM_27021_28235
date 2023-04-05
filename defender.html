@@ -106,6 +106,7 @@
             this.load.image('ronaldoo', 'assets/ronaldoo.png');
             this.load.audio('Goal', ['assets/Goal.mp3']);
             this.load.spritesheet('gk_red', 'assets/gk_red.png', {frameWidth: 127, frameHeight: 127});
+            this.load.spritesheet('player_blue', 'assets/player_blue.png', {frameWidth: 60, frameHeight: 131})
         }
 
         function create() {
@@ -118,8 +119,9 @@
             audio = this.sound.add('Goal');
 
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_red');
-            bola = this.physics.add.sprite(400, 580, 'ball');
-            cristiano = this.physics.add.sprite(300, 500, 'ronaldoo');
+            bola = this.physics.add.sprite(400, 575, 'ball');
+            //cristiano = this.physics.add.sprite(300, 500, 'ronaldoo');
+            player = this.physics.add.sprite(370, 535, 'player_blue');
 
             this.text = this.add.text(0, 0, '');
             this.input.on('pointermove', (pointer) => {
@@ -130,7 +132,9 @@
             goalkeeper.setBounce(0.2);
             goalkeeper.setCollideWorldBounds(true);
             bola.setCollideWorldBounds(true);
-            cristiano.setCollideWorldBounds(true);
+            //cristiano.setCollideWorldBounds(true);
+            player.setCollideWorldBounds(true);
+
 
             destinoX = Phaser.Math.Between(183, 622);   // 100, 700
             destinoY = Phaser.Math.Between(118, 307);    // 40, 305
@@ -138,7 +142,6 @@
 
             velocidade = getRandomInt(400, 1000);
             duracao = distancia / velocidade * 1000;
-
             //audio.setStartDelay(duracao);
             scoreText = this.add.text(350, 16, score[0] + ":" + score[1], {
                 fontSize: '64px', fill: '#FFFFFF'
@@ -172,7 +175,7 @@
                 /*
                 onUpdate: function () {
                     if (Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY) < 10) {   
-                        hitbola(goalkeeper, bola);
+                        this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
                     }
                 },
                 */
@@ -193,8 +196,33 @@
             
             setTimeout(() => {
                 this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
-            }, 1950 + duracao);
+            }, 2000 + duracao);
             
+
+            /*
+            if(distancia < 20){
+                this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
+            }
+            */
+            
+            
+            this.anims.create({
+                key: 'shoot',
+                frames: this.anims.generateFrameNumbers('player_blue', { start: 2, end: 3}),
+                frameRate: 0.5,
+                
+            });
+
+            player.anims.play('shoot', true);
+            player.setFrame(2);
+            setTimeout(function(){
+                player.setFrame(3);
+
+                setTimeout(function(){
+                    player.setFrame(2);
+                }, 200);
+            }, 2000);
+
 
             this.anims.create({
                 key: 'left',
@@ -231,7 +259,9 @@
 
             this.physics.add.collider(goalkeeper, platform_gk);
             this.physics.add.collider(bola, platform_gk);
-            this.physics.add.collider(cristiano, platform_pk);
+            this.physics.add.collider(bola, platform_pk);
+            //this.physics.add.collider(cristiano, platform_pk);
+            //this.physics.add.collider(player, platform_pk);
         
             
 
@@ -258,7 +288,8 @@
         }
 
         function update_score(bola) {
-            if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
+            //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
+            if (Defended == false && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
                 score[1]++;
                 scoreText.setText(score[0] + ":" + score[1]);
                 estadio.setTexture('campogolo');
@@ -282,7 +313,6 @@
                 return;
             }
             */
-
             //  /*
             if(cursors.up.isDown){
                 goalkeeper.setVelocityY(-100);
