@@ -117,10 +117,8 @@
             platform_pk.create(400, 625, 'ground').setScale(2).refreshBody();
             estadio = this.add.sprite(400, 300, 'campo');
             audio = this.sound.add('Goal');
-
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_red');
             bola = this.physics.add.sprite(400, 575, 'ball');
-            //cristiano = this.physics.add.sprite(300, 500, 'ronaldoo');
             player = this.physics.add.sprite(370, 535, 'player_blue');
 
             this.text = this.add.text(0, 0, '');
@@ -132,7 +130,6 @@
             goalkeeper.setBounce(0.2);
             goalkeeper.setCollideWorldBounds(true);
             bola.setCollideWorldBounds(true);
-            //cristiano.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
 
 
@@ -193,11 +190,11 @@
                 }
             });
 
-            
+            /*
             setTimeout(() => {
                 this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
             }, 2000 + duracao);
-            
+            */
 
             /*
             if(distancia < 20){
@@ -307,12 +304,28 @@
         }, 3000);
         */
 
-        function update() {
+        function update(time, delta) {
             /*
             if (Defended) {
                 return;
             }
             */
+            var distance = Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY);
+
+            if (distance <= 40) {
+
+                if(!this.colliderGkBola){
+                    this.colliderGkBola = this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
+                }
+
+            if(this.tempoDecorrido > 2000 + duracao){
+                this.physics.world.removeCollider(this.colliderGkBola);
+                this.colliderGkBola = null;
+            }
+        }
+
+            this.tempoDecorrido += delta;
+
             //  /*
             if(cursors.up.isDown){
                 goalkeeper.setVelocityY(-100);
