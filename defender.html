@@ -148,8 +148,8 @@
             player.setCollideWorldBounds(true);
 
 
-            destinoX = Phaser.Math.Between(183, 622);   // 100, 700
-            destinoY = Phaser.Math.Between(118, 307);    // 40, 305
+            destinoX = Phaser.Math.Between(175, 630);   // 100, 700
+            destinoY = Phaser.Math.Between(112, 313);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY);
 
             var botao2 = document.getElementById('cheatspeed-button');
@@ -257,7 +257,7 @@
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('gk_red', { start: 1, end: 2 }),
-                frameRate: 2,
+                frameRate: 3,
                 repeat: -1
             });
 
@@ -270,7 +270,7 @@
             this.anims.create({
                 key: 'right',
                 frames: this.anims.generateFrameNumbers('gk_red', { start: 4, end: 5 }),
-                frameRate: 2,
+                frameRate: 3,
                 repeat: -1
             });
 
@@ -323,7 +323,7 @@
 
         function update_score(bola) {
             //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
-            if (Defended == false && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
+            if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
                 score[1]++;
                 scoreText.setText(score[0] + ":" + score[1]);
                 estadio.setTexture('campogolo');
