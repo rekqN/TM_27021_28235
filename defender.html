@@ -133,7 +133,7 @@
             audio = this.sound.add('Goal');
             arbitro = this.sound.add('Apito');
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_red');
-            bola = this.physics.add.sprite(400, 575, 'ball');
+            bola = this.physics.add.sprite(400, 582, 'ball');
             player = this.physics.add.sprite(370, 535, 'player_blue');
 
             this.text = this.add.text(0, 0, '');
@@ -151,6 +151,22 @@
             destinoX = Phaser.Math.Between(183, 622);   // 100, 700
             destinoY = Phaser.Math.Between(118, 307);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY);
+
+            var botao2 = document.getElementById('cheatspeed-button');
+            botao2.addEventListener('click', adicionarCheatspeed);
+            
+            function adicionarCheatspeed(){
+                var prob_speedbaixa = 80;
+                var prob_sppedalta = 81;
+                var numAleatorio = Phaser.Math.Between(1, 100);
+                if (numAleatorio <= prob_speedbaixa) {
+                    velocidade = 100;
+                } 
+                else {
+                
+                velocidade = 3000;
+                }
+            }
 
             velocidade = getRandomInt(400, 1000);
             duracao = distancia / velocidade * 1000;
@@ -176,22 +192,7 @@
                 }, 500);   
             }
 
-            var botao2 = document.getElementById('cheatspeed-button');
-            botao2.addEventListener('click', adicionarCheatspeed);
             
-
-            function adicionarCheatspeed(){
-                var prob_speedbaixa = 80;
-                var prob_sppedalta = 81;
-                var numAleatorio = Phaser.Math.Between(1, 100);
-                if (numAleatorio <= prob_speedbaixa) {
-                    velocidade = 100;
-                } 
-                else {
-                
-                velocidade = 3000;
-                }
-            }
             
             
             this.tweens.add({
