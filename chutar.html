@@ -41,19 +41,23 @@
         var score = 0;
         var gameOver = false;
         var scoreText;
-        var destinoXBola;
-        var destinoYBola;
-        var destinoxRedes;
-        var destinoYRedes;
-        var distancia;
-        var duracao;
+        var destinoXBola = 0
+        var destinoYBola = 0;
+        var destinoxRedes = 0;
+        var destinoYRedes = 0;
+        var distancia = 0;
+        var duracao = 0;
         var bola;
         var spaceKey;
         var shootingArrow;
-        var rotatingArrowAnimation;
+        var rotatingArrowAnimation = 0;
         var shootBall;
+        var arrowAngle = 0;
+        var goalieAnimation;
+        var kickedBoolean;
         //var forceBar; pedir nihhiu sprite
-        //var forceBarAnimation; 
+        //var forceBarAnimation;
+        //var shootingIntensity = 0;
 
 
         var game = new Phaser.Game(config);
@@ -81,16 +85,17 @@
             this.add.image(400, 300, 'campo');
             shootingArrow = this.add.image(400, 550, 'seta').setOrigin(0, 0.5);
 
+            kickedBoolean = false;
             player = this.physics.add.sprite(400, 280, 'gk');
             bola = this.physics.add.sprite(400, 580, 'ball');
             player.setBounce(0.2);
             //player.setCollideWorldBounds(true);
 
-            bola.setCollideWorldBounds(true);
             destinoxRedes = Phaser.Math.Between(185, 615);
             destinoYRedes = Phaser.Math.Between(125, 240);
             distancia = Phaser.Math.Distance.Between(player.x, player.y, destinoxRedes, destinoYRedes);
 
+            bola.setCollideWorldBounds(true);
             destinoXBola = Phaser.Math.Between(183, 622);   // 100, 700
             destinoYBola = Phaser.Math.Between(118, 307);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
@@ -99,20 +104,20 @@
             duracao = distancia / velocidade * 1000;
 
 
-            this.tweens.add({
+            goalieAnimation = this.tweens.add({
                 targets: player,
                 x: destinoxRedes,
                 y: destinoYRedes,
                 duration: duracao,
                 ease: 'Linear'
             });
+            goalieAnimation.stop();
 
             shootBall = this.tweens.add({
                 targets: bola,
                 x: destinoXBola,
                 y: destinoYBola,
-                duration: duracao,
-                ease: 'Linear',
+                duration: duracao
             });
             shootBall.stop();
 
@@ -185,12 +190,26 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
+        function onSpaceKeyPress(scene){           
+            if(!kickedBoolean){
+                kickedBoolean = true;
+                console.log(shootingArrow.angle) //trocar o lado para onde a seta ponta
+                //fzr uso de trigonometria para resolver o problema
+                rotatingArrowAnimation.stop();
+
+                //forceBar.start();
+                //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
+                shootBall.play();
+            }
+        }
+
+
 
         function update() {
+
             if(spaceKey.isDown){
-                rotatingArrowAnimation.stop();
-                //forceBar.start();
-                shootBall.play();
+                goalieAnimation.play();
+                onSpaceKeyPress(this);
             }
 
             if (gameOver) {
