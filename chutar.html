@@ -35,6 +35,7 @@
         };
 
         var player;
+        var goalkeeper;
         var platform_gk;
         var platform_pk;
         var cursors;
@@ -48,13 +49,16 @@
         var distancia = 0;
         var duracao = 0;
         var bola;
-        var spaceKey;
         var shootingArrow;
         var rotatingArrowAnimation = 0;
         var shootBall;
         var arrowAngle = 0;
         var goalieAnimation;
         var kickedBoolean;
+        var spaceKey;
+        var startTime;
+        var gameTime;
+        var elapsedTime;
         //var forceBar; pedir nihhiu sprite
         //var forceBarAnimation;
         //var shootingIntensity = 0;
@@ -70,13 +74,13 @@
             this.load.image('baliza', 'assets/baliza.png');
             this.load.image('gk', 'assets/gk.png');
             this.load.image('seta', 'assets/seta.png');
+            this.load.spritesheet('gk_blue', 'assets/gk_blue.png', {frameWidth: 127, frameHeight: 127});
+            this.load.spritesheet('player_red', 'assets/player_red.png', {frameWidth: 60, frameHeight: 131})
         }
 
 
 
         function create() {
-
-            spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
             platform_gk = this.physics.add.staticGroup();
             platform_pk = this.physics.add.staticGroup();
@@ -86,18 +90,25 @@
             shootingArrow = this.add.image(400, 550, 'seta').setOrigin(0, 0.5);
 
             kickedBoolean = false;
-            player = this.physics.add.sprite(400, 280, 'gk');
-            bola = this.physics.add.sprite(400, 580, 'ball');
-            player.setBounce(0.2);
-            //player.setCollideWorldBounds(true);
-
+            goalkeeper = this.physics.add.sprite(400, 265, 'gk_blue');
+            bola = this.physics.add.sprite(400, 582, 'ball');
+            player = this.physics.add.sprite(370, 535, 'player_red');
+            goalkeeper.setBounce(0.2);
+            player.setCollideWorldBounds(true);
+            
+            clock = this.time.addEvent({ delay: 0, loop: false });
+            startTime = clock.getElapsed();
+            gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
+            spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            
             destinoxRedes = Phaser.Math.Between(185, 615);
             destinoYRedes = Phaser.Math.Between(125, 240);
-            distancia = Phaser.Math.Distance.Between(player.x, player.y, destinoxRedes, destinoYRedes);
+            distancia = Phaser.Math.Distance.Between(goalkeeper.x, goalkeeper.y, destinoxRedes, destinoYRedes);
 
             bola.setCollideWorldBounds(true);
-            destinoXBola = Phaser.Math.Between(183, 622);   // 100, 700
-            destinoYBola = Phaser.Math.Between(118, 307);    // 40, 305
+            player.setCollideWorldBounds(true);
+            destinoXBola = Phaser.Math.Between(175, 630);   // 100, 700
+            destinoYBola = Phaser.Math.Between(112, 313);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
 
             velocidade = getRandomInt(100, 1000);
@@ -105,11 +116,11 @@
 
 
             goalieAnimation = this.tweens.add({
-                targets: player,
+                targets: goalkeeper,
                 x: destinoxRedes,
                 y: destinoYRedes,
                 duration: duracao,
-                ease: 'Linear'
+                ease: 'Linear', 
             });
             goalieAnimation.stop();
 
@@ -165,9 +176,10 @@
             //  Input Events
             cursors = this.input.keyboard.createCursorKeys();
 
-            this.physics.add.collider(player, platform_gk);
+            this.physics.add.collider(goalkeeper, platform_gk);
             this.physics.add.collider(bola, platform_gk);
-            this.physics.add.collider(player, bola, hitBola, null, this);
+            this.physics.add.collider(bola, platform_pk);
+            this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
 
             this.pointerText = this.add.text(0, 0, '');
             this.input.on('pointermove', (pointer) => {
@@ -175,19 +187,33 @@
                 this.pointerText.setText(`x: ${pointer.x}, y: ${pointer.y}`);
             })
 
+
         }
 
-        function hitBola(player, bola) {
+        function hitBola(goalkeeper, bola) {
             this.physics.pause();
-            player.setTint(0xff0000);
+            goalkeeper.setTint(0xff0000);
             bola.anims.play('turn');
-            gameOver = true;
+            Defended = true;
         }
 
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function update_score(bola) {
+            //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
+            if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
+                score[1]++;
+                scoreText.setText(score[0] + ":" + score[1]);
+                estadio.setTexture('campogolo');
+                audio.play();
+            }
+            else {
+                scoreText.setText(score[0] + ":" + score[1]);
+            }
         }
 
         function onSpaceKeyPress(scene){           
@@ -200,21 +226,30 @@
                 //forceBar.start();
                 //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
                 shootBall.play();
+                
             }
         }
 
 
 
-        function update() {
+        function update(time, delta) {
 
             if(spaceKey.isDown){
                 goalieAnimation.play();
-                onSpaceKeyPress(this);
+                onSpaceKeyPress(this);   
             }
 
-            if (gameOver) {
+            if (Phaser.Input.Keyboard.JustDown(spaceKey)) {
+                elapsedTime = clock.getElapsed() - startTime;
+                gameTime.setText('Time: ' + elapsedTime);
+                
+            }
+
+            /*
+            if (Defended) {
                 return;
             }
+            */
 
             if (cursors.up.isDown && bola.body.touching.down) {
                 bola.setVelocityY(-630);
