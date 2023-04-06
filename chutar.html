@@ -95,6 +95,7 @@
             goalkeeper.setBounce(0.2);
             player.setCollideWorldBounds(true);
             
+            
             clock = this.time.addEvent({ delay: 0, loop: false });
             startTime = clock.getElapsed();
             gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
@@ -106,8 +107,8 @@
 
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
-            //destinoXBola = Phaser.Math.Between(175, 630);   // 100, 700
-            //destinoYBola = Phaser.Math.Between(112, 313);    // 40, 305
+            destinoXBola = Phaser.Math.Between(175, 630);   // 100, 700
+            destinoYBola = Phaser.Math.Between(112, 313);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
 
             velocidade = getRandomInt(100, 1000);
@@ -123,13 +124,28 @@
             });
             goalieAnimation.stop();
 
+
             shootBall = this.tweens.add({
                 targets: bola,
                 x: destinoXBola,
                 y: destinoYBola,
-                duration: duracao
+                duration: duracao,
+                ease: 'Linear',
+                
             });
             shootBall.stop();
+
+            /* 
+            this.tweens.add({
+                targets: bola,
+                x: destinoXBola,
+                y: destinoYBola,
+                duration: duracao,
+                ease: 'Linear',
+                delay: 2000
+                
+            });
+            */
 
             rotatingArrowAnimation = this.tweens.add({
                 targets: shootingArrow,
@@ -138,6 +154,8 @@
                 yoyo: true,
                 repeat: -1
             });
+
+            
 
             // pedir nihhiu sprite
             // strengthBarAnimation = this.tweens.add({
@@ -225,6 +243,7 @@
             if(!kickedBoolean){
                 hasKicked = true;
                 rotatingArrowAnimation.stop();
+                
                 calculateBallPosition(destinoXBola, destinoYBola);
 
 
@@ -239,7 +258,7 @@
         function update(time, delta) {
 
             if(spaceKey.isDown){
-                goalieAnimation.play();
+                //goalieAnimation.play();
                 onSpaceKeyPress(this);   
             }
 

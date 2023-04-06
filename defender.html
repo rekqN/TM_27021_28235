@@ -27,7 +27,7 @@
             cursor: pointer;
         }
 
-        #cheatspeed-button {
+        #cheatriple-button {
             position: absolute;
             top: 210px;
             left: 748px;
@@ -54,7 +54,7 @@
     <div id="game-container"></div>
     <button id="refresh-button">Refresh</button>
     <button id="cheatarget-button"></button>
-    <button id="cheatspeed-button"></button>
+    <button id="cheatriple-button"></button>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
@@ -149,22 +149,7 @@
             destinoX = Phaser.Math.Between(175, 630);   // 100, 700
             destinoY = Phaser.Math.Between(112, 313);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY);
-
-            var botao2 = document.getElementById('cheatspeed-button');
-            botao2.addEventListener('click', adicionarCheatspeed);
             
-            function adicionarCheatspeed(){
-                var prob_speedbaixa = 80;
-                var prob_sppedalta = 81;
-                var numAleatorio = Phaser.Math.Between(1, 100);
-                if (numAleatorio <= prob_speedbaixa) {
-                    velocidade = 100;
-                } 
-                else {
-                
-                velocidade = 3000;
-                }
-            }
 
             velocidade = getRandomInt(400, 1000);
             duracao = distancia / velocidade * 1000;
@@ -248,8 +233,8 @@
 
                 setTimeout(function(){
                     player.setFrame(2);
-                }, 200);
-            }, 2000);
+                }, 100);
+            }, 4000);
 
 
             this.anims.create({
