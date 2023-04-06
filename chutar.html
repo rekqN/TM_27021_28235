@@ -80,6 +80,8 @@
 
 
         function create() {
+            //var line = new Phaser.Line(300, 100, 500, 500);
+            
 
             platform_gk = this.physics.add.staticGroup();
             platform_pk = this.physics.add.staticGroup();
@@ -95,7 +97,13 @@
             goalkeeper.setBounce(0.2);
             player.setCollideWorldBounds(true);
             
-            
+            var linha = new Phaser.Geom.Line(shootingArrow.x, shootingArrow.y, 0, 0);
+            Phaser.Geom.Line.SetToAngle(linha, shootingArrow.x, shootingArrow.y, Phaser.Math.DegToRad(0), 1000);
+            this.graphics = this.add.graphics();
+            this.graphics.lineStyle(2, 0xffffff);
+            this.graphics.strokeLineShape(linha);
+
+
             clock = this.time.addEvent({ delay: 0, loop: false });
             startTime = clock.getElapsed();
             gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
@@ -277,6 +285,12 @@
             if (cursors.up.isDown && bola.body.touching.down) {
                 bola.setVelocityY(-630);
             }
+
+            /*
+            var arrowEndX = shootingArrow.x + Math.cos(shootingArrow.rotation) * 100;
+            var arrowEndY = shootingArrow.y + Math.sin(shootingArrow.rotation) * 100;
+            line.setTo(shootingArrow.x, shootingArrow.y, arrowEndX, arrowEndY);
+            */
         }
 
 
