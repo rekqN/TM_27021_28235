@@ -52,15 +52,14 @@
         var shootingArrow;
         var rotatingArrowAnimation = 0;
         var shootBall;
-        var arrowAngle = 0;
         var goalieAnimation;
         var kickedBoolean;
         var spaceKey;
         var startTime;
         var gameTime;
         var elapsedTime;
-        //var forceBar; pedir nihhiu sprite
-        //var forceBarAnimation;
+        //var strengthBar; pedir nihhiu sprite
+        //var strengthBarAnimation;
         //var shootingIntensity = 0;
 
 
@@ -87,7 +86,7 @@
             platform_gk.create(400, 360, 'ground').setScale(2).refreshBody();
             platform_pk.create(400, 625, 'ground').setScale(2).refreshBody();
             this.add.image(400, 300, 'campo');
-            shootingArrow = this.add.image(400, 550, 'seta').setOrigin(0, 0.5);
+            shootingArrow = this.add.image(400, 550, 'seta').setOrigin(1, 0.5);
 
             kickedBoolean = false;
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_blue');
@@ -107,8 +106,8 @@
 
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
-            destinoXBola = Phaser.Math.Between(175, 630);   // 100, 700
-            destinoYBola = Phaser.Math.Between(112, 313);    // 40, 305
+            //destinoXBola = Phaser.Math.Between(175, 630);   // 100, 700
+            //destinoYBola = Phaser.Math.Between(112, 313);    // 40, 305
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
 
             velocidade = getRandomInt(100, 1000);
@@ -134,15 +133,15 @@
 
             rotatingArrowAnimation = this.tweens.add({
                 targets: shootingArrow,
-                angle: { from: -40, to: -140 },
+                angle: { from: 40, to: 140 },
                 duration: 800,
                 yoyo: true,
                 repeat: -1
             });
 
             // pedir nihhiu sprite
-            // forceBarAnimation = this.tweens.add({
-            //     target: forceBar,
+            // strengthBarAnimation = this.tweens.add({
+            //     target: strengthBar,
             //     duration: 800,
             //     yoyo: true,
             //     repeat: -1
@@ -216,17 +215,22 @@
             }
         }
 
+        // uso de trigonometria para saber para que x e y a bola vai ser chutada
+        function calculateBallPosition(destinoXBola, destinoYBola){
+            destinoXBola = Math.cos(shootingArrow.angle.DEG_TO_RAD) * 100;
+            destinoYBola = Math.sin(shootingArrow.angle.DEG_TO_RAD) * 100;
+        }
+
         function onSpaceKeyPress(scene){           
             if(!kickedBoolean){
-                kickedBoolean = true;
-                console.log(shootingArrow.angle) //trocar o lado para onde a seta ponta
-                //fzr uso de trigonometria para resolver o problema
+                hasKicked = true;
                 rotatingArrowAnimation.stop();
+                calculateBallPosition(destinoXBola, destinoYBola);
 
-                //forceBar.start();
+
+                //strengthBar.start();
                 //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
                 shootBall.play();
-                
             }
         }
 
