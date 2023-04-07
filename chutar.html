@@ -98,7 +98,7 @@
             player.setCollideWorldBounds(true);
             
             var linha = new Phaser.Geom.Line(shootingArrow.x, shootingArrow.y, 0, 0);
-            Phaser.Geom.Line.SetToAngle(linha, shootingArrow.x, shootingArrow.y, Phaser.Math.DegToRad(0), 1000);
+            Phaser.Geom.Line.SetToAngle(linha, shootingArrow.x, shootingArrow.y, 90, 300);
             this.graphics = this.add.graphics();
             this.graphics.lineStyle(2, 0xffffff);
             this.graphics.strokeLineShape(linha);
@@ -115,12 +115,6 @@
 
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
-            destinoXBola = Phaser.Math.Between(175, 630);   // 100, 700
-            destinoYBola = Phaser.Math.Between(112, 313);    // 40, 305
-            distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
-
-            velocidade = getRandomInt(100, 1000);
-            duracao = distancia / velocidade * 1000;
 
 
             goalieAnimation = this.tweens.add({
@@ -242,9 +236,13 @@
         }
 
         // uso de trigonometria para saber para que x e y a bola vai ser chutada
-        function calculateBallPosition(destinoXBola, destinoYBola){
-            destinoXBola = Math.cos(shootingArrow.angle.DEG_TO_RAD) * 100;
-            destinoYBola = Math.sin(shootingArrow.angle.DEG_TO_RAD) * 100;
+        function calculateBallPositionAndSpeed(destinoXBola, destinoYBola, linha){
+            destinoXBola = Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * 100;
+            destinoYBola = Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * 100;
+
+            distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
+            velocidade = getRandomInt(100, 1000); //Phaser.Math.Distance.Between(linha.x, linha.y, DestinoXBola, DestinoYBola) / 3;
+            duracao = distancia / velocidade * 1000;
         }
 
         function onSpaceKeyPress(scene){           
@@ -252,7 +250,7 @@
                 hasKicked = true;
                 rotatingArrowAnimation.stop();
                 
-                calculateBallPosition(destinoXBola, destinoYBola);
+                calculateBallPositionAndSpeed(destinoXBola, destinoYBola, linha);
 
 
                 //strengthBar.start();
