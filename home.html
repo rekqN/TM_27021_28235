@@ -42,59 +42,11 @@
     <script src="game.js"></script>
     <script>
         document.getElementById("play-button").addEventListener("click", function(){
-            window.location.href = "defender.html";
+            window.location.href = "game.html";
         
         });
     </script>
    
 </body>
 
-<script type="text/javascript">
-
-    var config = {
-            type: Phaser.AUTO,
-            width: 800,
-            height: 600,
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 300 },
-                    debug: false
-                }
-            },
-            scene: {
-                preload: preload,
-                create: create,
-                update: update
-            }
-        };
-
-        var dif = Math.abs(score[0]-score[1]);
-
-        var game = new Phaser.Game(config);
-
-            // espaçamento inútil
-        function preload(){
-        
-        }
-
-        function create(){
-
-        }
-
-        function resultado(){
-            if(ronda == 5 && dif == 0){
-                while(dif == 0){
-                //continua
-                }
-            }
-        }
-
-        function update(){
-            if (gameOver) {
-                return;
-            }
-
-        }
-</script>
 </html>
