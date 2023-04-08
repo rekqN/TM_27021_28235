@@ -102,11 +102,13 @@
             this.graphics.lineStyle(2, 0xffffff);
             this.graphics.strokeLineShape(linha);
 
-            strengthBar = new Phaser.Geom.Line(750, 550, 0, 0);
-            Phaser.Geom.Line.SetToAngle(strengthBar, 750, 550, 3 * Math.PI / 2, 300);
-            this.graphics = this.add.graphics();
-            this.graphics.lineStyle(10, 0xff0000);
-            this.graphics.strokeLineShape(strengthBar);
+            // strengthBar = new Phaser.Geom.Line(750, 550, 0, 0);
+            // Phaser.Geom.Line.SetToAngle(strengthBar, 750, 550, 3 * Math.PI / 2, 300);
+            // this.graphics = this.add.graphics();
+            // this.graphics.lineStyle(10, 0xff0000);
+            // this.graphics.strokeLineShape(strengthBar);
+
+            strengthBar =  this.add.line(750, 550, 0, 0, 20, 0, 0xff6699).setAngle(90).setStrokeStyle(10);
 
             
 
@@ -155,10 +157,10 @@
 
             strengthBarAnimation = this.tweens.add({
                 targets: strengthBar,
+                endXPoint: 50,
                 ease: 'Linear',
                 repeat: -1,
                 yoyo: true,
-                alpha: 0.2
             });
 
             // strengthBarAnimation = this.tweens.add({
