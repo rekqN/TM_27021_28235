@@ -16,7 +16,7 @@
 
     <script type="text/javascript">
 
-        var config = {
+        let config = {
             type: Phaser.CANVAS,
             width: 800,
             height: 600,
@@ -34,36 +34,37 @@
             }
         };
 
-        var player;
-        var goalkeeper;
-        var platform_gk;
-        var platform_pk;
-        var cursors;
-        var score = 0;
-        var gameOver = false;
-        var scoreText;
-        var destinoXBola = 0
-        var destinoYBola = 0;
-        var destinoxRedes = 0;
-        var destinoYRedes = 0;
-        var distancia = 0;
-        var duracao = 0;
-        var bola;
-        var shootingArrow;
-        var rotatingArrowAnimation = 0;
-        var shootBall;
-        var goalieAnimation;
-        var kickedBoolean;
-        var spaceKey;
-        var startTime;
-        var gameTime;
-        var elapsedTime;
-        //var strengthBar; pedir nihhiu sprite
-        //var strengthBarAnimation;
-        //var shootingIntensity = 0;
+        let player;
+        let goalkeeper;
+        let platform_gk;
+        let platform_pk;
+        let cursors;
+        let score = 0;
+        let gameOver = false;
+        let scoreText;
+        let destinoXBola = 0
+        let destinoYBola = 0;
+        let destinoXRedes = 0;
+        let destinoYRedes = 0;
+        let distancia = 0;
+        let duracao = 0;
+        let bola;
+        let shootingArrow;
+        let rotatingArrowAnimation = 0;
+        let shootBall;
+        let goalieAnimation;
+        let hasKicked;
+        let spaceKey;
+        let startTime;
+        let gameTime;
+        let elapsedTime;
+        let linha;
+        let strengthBar;
+        let strengthBarAnimation;
+        //let shootingIntensity = 0;
 
 
-        var game = new Phaser.Game(config);
+        let game = new Phaser.Game(config);
 
         function preload() {
             this.load.image('campo', 'assets/campo.png');
@@ -80,8 +81,6 @@
 
 
         function create() {
-            //var line = new Phaser.Line(300, 100, 500, 500);
-            
 
             platform_gk = this.physics.add.staticGroup();
             platform_pk = this.physics.add.staticGroup();
@@ -90,28 +89,37 @@
             this.add.image(400, 300, 'campo');
             shootingArrow = this.add.image(400, 550, 'seta').setOrigin(1, 0.5);
 
-            kickedBoolean = false;
+            hasKicked = false;
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_blue');
             bola = this.physics.add.sprite(400, 582, 'ball');
             player = this.physics.add.sprite(370, 535, 'player_red');
             goalkeeper.setBounce(0.2);
             player.setCollideWorldBounds(true);
             
-            var linha = new Phaser.Geom.Line(shootingArrow.x, shootingArrow.y, 0, 0);
+            linha = new Phaser.Geom.Line(shootingArrow.x, shootingArrow.y, 0, 0);
             Phaser.Geom.Line.SetToAngle(linha, shootingArrow.x, shootingArrow.y, 90, 300);
             this.graphics = this.add.graphics();
             this.graphics.lineStyle(2, 0xffffff);
             this.graphics.strokeLineShape(linha);
 
+            strengthBar = new Phaser.Geom.Line(750, 550, 0, 0);
+            Phaser.Geom.Line.SetToAngle(strengthBar, 750, 550, 3 * Math.PI / 2, 300);
+            this.graphics = this.add.graphics();
+            this.graphics.lineStyle(10, 0xff0000);
+            this.graphics.strokeLineShape(strengthBar);
+
+            
 
             clock = this.time.addEvent({ delay: 0, loop: false });
             startTime = clock.getElapsed();
             gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
             spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             
-            destinoxRedes = Phaser.Math.Between(185, 615);
+            destinoXRedes = Phaser.Math.Between(185, 615);
             destinoYRedes = Phaser.Math.Between(125, 240);
-            distancia = Phaser.Math.Distance.Between(goalkeeper.x, goalkeeper.y, destinoxRedes, destinoYRedes);
+            distancia = Phaser.Math.Distance.Between(goalkeeper.x, goalkeeper.y, destinoXRedes, destinoYRedes);
+            velocidade = getRandomInt(100, 1000);
+            duracao = distancia / velocidade * 1000;
 
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
@@ -119,7 +127,7 @@
 
             goalieAnimation = this.tweens.add({
                 targets: goalkeeper,
-                x: destinoxRedes,
+                x: destinoXRedes,
                 y: destinoYRedes,
                 duration: duracao,
                 ease: 'Linear', 
@@ -137,18 +145,6 @@
             });
             shootBall.stop();
 
-            /* 
-            this.tweens.add({
-                targets: bola,
-                x: destinoXBola,
-                y: destinoYBola,
-                duration: duracao,
-                ease: 'Linear',
-                delay: 2000
-                
-            });
-            */
-
             rotatingArrowAnimation = this.tweens.add({
                 targets: shootingArrow,
                 angle: { from: 40, to: 140 },
@@ -157,9 +153,14 @@
                 repeat: -1
             });
 
-            
+            strengthBarAnimation = this.tweens.add({
+                targets: strengthBar,
+                ease: 'Linear',
+                repeat: -1,
+                yoyo: true,
+                alpha: 0.2
+            });
 
-            // pedir nihhiu sprite
             // strengthBarAnimation = this.tweens.add({
             //     target: strengthBar,
             //     duration: 800,
@@ -235,23 +236,22 @@
             }
         }
 
-        // uso de trigonometria para saber para que x e y a bola vai ser chutada
         function calculateBallPositionAndSpeed(destinoXBola, destinoYBola, linha){
-            destinoXBola = Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * 100;
+            destinoXBola = Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * 100; //ta a dar 0 por alguma razão
             destinoYBola = Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * 100;
 
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
-            velocidade = getRandomInt(100, 1000); //Phaser.Math.Distance.Between(linha.x, linha.y, DestinoXBola, DestinoYBola) / 3;
-            duracao = distancia / velocidade * 1000;
+            velocidade = getRandomInt(10, 100); //Phaser.Math.Distance.Between(linha.x, linha.y, DestinoXBola, DestinoYBola) / 3;
+            duracao = distancia / velocidade * 100;
         }
 
         function onSpaceKeyPress(scene){           
-            if(!kickedBoolean){
+            if(!hasKicked){
                 hasKicked = true;
                 rotatingArrowAnimation.stop();
+                goalieAnimation.play();
                 
                 calculateBallPositionAndSpeed(destinoXBola, destinoYBola, linha);
-
 
                 //strengthBar.start();
                 //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
@@ -285,8 +285,8 @@
             }
 
             /*
-            var arrowEndX = shootingArrow.x + Math.cos(shootingArrow.rotation) * 100;
-            var arrowEndY = shootingArrow.y + Math.sin(shootingArrow.rotation) * 100;
+            let arrowEndX = shootingArrow.x + Math.cos(shootingArrow.rotation) * 100;
+            let arrowEndY = shootingArrow.y + Math.sin(shootingArrow.rotation) * 100;
             line.setTo(shootingArrow.x, shootingArrow.y, arrowEndX, arrowEndY);
             */
         }
