@@ -9,11 +9,25 @@
         body {
             margin: 0;
         }
+        #button-next{
+            position: absolute;
+            display: none;
+            top: 500px;
+            left: 640px;
+            padding: 25px;
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 15px;
+            cursor: pointer;
+            display: none;
+        }
+
     </style>
 </head>
 
 <body>
-
+    <div id="game-container"></div>
+    <button id="button-next">Next</button>
     <script type="text/javascript">
 
         let config = {
@@ -39,7 +53,8 @@
         let platform_gk;
         let platform_pk;
         let cursors;
-        let score = 0;
+        var score1 = 0;
+        var score2 = 0;
         let gameOver = false;
         let scoreText;
         let destinoXBola = 0
@@ -107,7 +122,7 @@
 
             clock = this.time.addEvent({ delay: 0, loop: false });
             startTime = clock.getElapsed();
-            gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
+            //gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
             spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             
             destinoXRedes = Phaser.Math.Between(185, 615);
@@ -116,6 +131,16 @@
             velocidade = getRandomInt(100, 1000);
             duracao = distancia / velocidade * 1000;
 
+            // RECEBER DA PAGINA ANTERIOR
+            score2 = new URLSearchParams(window.location.search).get('score2');
+            /*
+            var urlParams = new URLSearchParams(window.location.search);
+            score1 = urlParams.get('score1');
+            score2 = urlParams.get('score2');
+            */
+            scoreText = this.add.text(350, 16, score1 + ":" + score2, {
+                fontSize: '64px', fill: '#FFFFFF'
+            });
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
 
@@ -196,6 +221,16 @@
                 this.pointerText.setText(`x: ${pointer.x}, y: ${pointer.y}`);
             })
 
+            setTimeout(() => {
+                document.getElementById('button-next').style.display = 'block';
+            }, 5000);
+
+            document.getElementById('button-next').addEventListener('click', function () {
+            window.location.href = "defender.html?score1=" + score1;
+            //window.location.href = "chutar.html?score1=" + score1 + '&score2=' + score2;
+            
+        });
+
 
         }
 
@@ -215,13 +250,13 @@
         function update_score(bola) {
             //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
             if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
-                score[1]++;
-                scoreText.setText(score[0] + ":" + score[1]);
+                score1++;
+                scoreText.setText(score1 + ":" + score2);
                 estadio.setTexture('campogolo');
                 audio.play();
             }
             else {
-                scoreText.setText(score[0] + ":" + score[1]);
+                scoreText.setText(score1 + ":" + score2);
             }
         }
 
@@ -249,6 +284,19 @@
             }
         }
 
+        function update_score(bola) {
+            //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
+            if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
+                score[1]++;
+                scoreText.setText(score[0] + ":" + score[1]);
+                estadio.setTexture('campogolo_blue');
+                audio.play();
+            }
+            else {
+                scoreText.setText(score[0] + ":" + score[1]);
+            }
+        }
+
 
 
         function update(time, delta) {
@@ -258,6 +306,7 @@
                 onSpaceKeyPress(this);   
             }
 
+            /*
             if (Phaser.Input.Keyboard.JustDown(spaceKey)) {
                 elapsedTime = clock.getElapsed() - startTime;
                 gameTime.setText('Time: ' + elapsedTime);

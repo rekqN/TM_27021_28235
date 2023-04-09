@@ -5,16 +5,6 @@
     <meta charset="UTF-8" />
     <title>Jogo de Penaltis</title>
     <style>
-        #refresh-button {
-            position: absolute;
-            top: 500px;
-            left: 640px;
-            padding: 25px;
-            background-color: #ffffff;
-            color: #000000;
-            border-radius: 15px;
-            cursor: pointer;
-        }
 
         #cheatarget-button {
             position: absolute;
@@ -38,6 +28,19 @@
             cursor: pointer;
         }
 
+        #button-next{
+            position: absolute;
+            display: none;
+            top: 500px;
+            left: 640px;
+            padding: 25px;
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 15px;
+            cursor: pointer;
+            display: none;
+        }
+
 
     </style>
 
@@ -52,15 +55,18 @@
 
 <body>
     <div id="game-container"></div>
-    <button id="refresh-button">Refresh</button>
+    <button id="button-next">Next</button>
     <button id="cheatarget-button"></button>
     <button id="cheatriple-button"></button>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
+        /*
         document.getElementById('refresh-button').addEventListener('click', function () {
+            //window.location.href = "chutar.html";
             location.reload();
         });
+        */
     </script>
 
     <script type="text/javascript">
@@ -73,6 +79,8 @@
         var cursors;
         var Defended = false;
         var score= [0, 0];
+        var score1 = 0;
+        var score2 = 0;
         var scoreText;
         var destinoX;
         var destinoY;
@@ -106,6 +114,7 @@
         };
     
         var game = new Phaser.Game(config);
+        
 
         /*
         function playGame(){
@@ -137,6 +146,7 @@
 
         function create() {
 
+
             platform_gk = this.physics.add.staticGroup();
             platform_pk = this.physics.add.staticGroup();
             platform_gk.create(400, 360, 'ground').setScale(2).refreshBody();
@@ -154,6 +164,8 @@
                 this.text.setText(`x: ${pointer.x}, y: ${pointer.y}`);
             });
 
+            
+
             goalkeeper.setBounce(0.2);
             goalkeeper.setCollideWorldBounds(true);
             bola.setCollideWorldBounds(true);
@@ -167,8 +179,16 @@
 
             velocidade = getRandomInt(400, 1000);
             duracao = distancia / velocidade * 1000;
+
+            // RECEBER DA PAGINA ANTERIOR
+            score1 = new URLSearchParams(window.location.search).get('score1');
+            /*
+            var urlParams = new URLSearchParams(window.location.search);
+            score1 = urlParams.get('score1');
+            score2 = urlParams.get('score2');
+            */
             //audio.setStartDelay(duracao);
-            scoreText = this.add.text(350, 16, score[0] + ":" + score[1], {
+            scoreText = this.add.text(350, 16, score1 + ":" + score2, {
                 fontSize: '64px', fill: '#FFFFFF'
             });
         
@@ -302,6 +322,19 @@
                 this.text.setText(`x: ${pointer.x}, y: ${pointer.y}`);
             });
 
+            setTimeout(() => {
+                document.getElementById('button-next').style.display = 'block';
+            }, 5000);
+
+            // PASSAR PARA A PROXIMA PAGINA
+
+            document.getElementById('button-next').addEventListener('click', function () {
+            window.location.href = "chutar.html?score2=" + score2;
+            //window.location.href = "chutar.html?score1=" + score1 + '&score2=' + score2;
+            
+        });
+
+
         } // fim da função create
 
     //   if(Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY) < 20){
@@ -321,13 +354,13 @@
         function update_score(bola) {
             //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
             if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
-                score[1]++;
-                scoreText.setText(score[0] + ":" + score[1]);
+                score2++;
+                scoreText.setText(score1 + ":" + score2);
                 estadio.setTexture('campogolo_blue');
                 audio.play();
             }
             else {
-                scoreText.setText(score[0] + ":" + score[1]);
+                scoreText.setText(score1 + ":" + score2);
             }
         }
 
