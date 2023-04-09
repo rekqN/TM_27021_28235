@@ -78,6 +78,8 @@
         let linha;
         let strengthBar;
         let strengthBarAnimation;
+        let round;
+        let roundText;
         //let shootingIntensity = 0;
 
 
@@ -138,19 +140,29 @@
             //score2 = new URLSearchParams(window.location.search).get('score2');
             score1 = new URLSearchParams(window.location.search).get('score1') ? parseInt(new URLSearchParams(window.location.search).get('score1')) : 0;
             score2 = new URLSearchParams(window.location.search).get('score2') ? parseInt(new URLSearchParams(window.location.search).get('score2')) : 0;
-            
+            round = new URLSearchParams(window.location.search).get('round') ? parseInt(new URLSearchParams(window.location.search).get('round')) : 1;
             /*
             var urlParams = new URLSearchParams(window.location.search);
             score1 = urlParams.get('score1');
             score2 = urlParams.get('score2');
             */
-            var rectangle = this.add.graphics();
+            let rectangle = this.add.graphics();
             rectangle.fillStyle(0xFFffff, 1); 
-            rectangle.fillRoundedRect(306, 10, 200, 70, 10);
+            rectangle.fillRoundedRect(344, 10, 120, 70, 10);
 
-            scoreText = this.add.text(350, 16, score1 + ":" + score2, {
-                fontSize: '64px', fill: '#000000'
+            scoreText = this.add.text(360, 24, score1 + ":" + score2, {
+                fontSize: '50px', fill: '#000000'
             });
+
+            let rectangle2 = this.add.graphics();
+            rectangle2.fillStyle(0xFFffff, 1); 
+            rectangle2.fillRoundedRect(26, 10, 180, 40, 10);
+
+            roundText = this.add.text(58, 16, "Round " + round, {
+                fontSize: '30px', fill: '#000000'
+            });
+
+
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
 
@@ -238,7 +250,7 @@
             // PASSAR PARA A PROXIMA PAGINA
 
             document.getElementById('button-next').addEventListener('click', function () {
-            window.location.href = "defender.html?score1=" + score1 + "&score2=" + score2;
+            window.location.href = "defender.html?score1=" + score1 + "&score2=" + score2 + "&round=" + round;
             //window.location.href = "defender.html?score1=" + score1;
             
         });
