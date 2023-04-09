@@ -9,6 +9,7 @@
         body {
             margin: 0;
         }
+
         #button-next{
             position: absolute;
             display: none;
@@ -21,6 +22,7 @@
             cursor: pointer;
             display: none;
         }
+
 
     </style>
 </head>
@@ -142,8 +144,12 @@
             score1 = urlParams.get('score1');
             score2 = urlParams.get('score2');
             */
+            var rectangle = this.add.graphics();
+            rectangle.fillStyle(0xFFffff, 1); 
+            rectangle.fillRoundedRect(306, 10, 200, 70, 10);
+
             scoreText = this.add.text(350, 16, score1 + ":" + score2, {
-                fontSize: '64px', fill: '#FFFFFF'
+                fontSize: '64px', fill: '#000000'
             });
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);

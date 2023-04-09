@@ -190,8 +190,12 @@
             score2 = urlParams.get('score2');
             */
             //audio.setStartDelay(duracao);
+            var rectangle = this.add.graphics();
+            rectangle.fillStyle(0xFFffff, 1); 
+            rectangle.fillRoundedRect(306, 10, 200, 70, 10);
+            //rectangle.setCornerRadius(20);
             scoreText = this.add.text(350, 16, score1 + ":" + score2, {
-                fontSize: '64px', fill: '#FFFFFF'
+                fontSize: '64px', fill: '#000000'
             });
         
            
