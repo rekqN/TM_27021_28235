@@ -348,8 +348,12 @@
             document.getElementById('button-next').addEventListener('click', function () {
             //window.location.href = "chutar.html?score2=" + score2;
             round++;
-            window.location.href = "chutar.html?score1=" + score1 + "&score2=" + score2 + "&round="  + round;
-            
+            if(round <= 5 || (round >= 5 && score1 == score2)){
+                window.location.href = "chutar.html?score1=" + score1 + "&score2=" + score2 + "&round="  + round;
+            }
+            else{
+                window.location.href = "game.html";
+            }
             
         });
 
