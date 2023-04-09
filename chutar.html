@@ -132,7 +132,11 @@
             duracao = distancia / velocidade * 1000;
 
             // RECEBER DA PAGINA ANTERIOR
-            score2 = new URLSearchParams(window.location.search).get('score2');
+
+            //score2 = new URLSearchParams(window.location.search).get('score2');
+            score1 = new URLSearchParams(window.location.search).get('score1') ? parseInt(new URLSearchParams(window.location.search).get('score1')) : 0;
+            score2 = new URLSearchParams(window.location.search).get('score2') ? parseInt(new URLSearchParams(window.location.search).get('score2')) : 0;
+            
             /*
             var urlParams = new URLSearchParams(window.location.search);
             score1 = urlParams.get('score1');
@@ -225,9 +229,11 @@
                 document.getElementById('button-next').style.display = 'block';
             }, 5000);
 
+            // PASSAR PARA A PROXIMA PAGINA
+
             document.getElementById('button-next').addEventListener('click', function () {
-            window.location.href = "defender.html?score1=" + score1;
-            //window.location.href = "chutar.html?score1=" + score1 + '&score2=' + score2;
+            window.location.href = "defender.html?score1=" + score1 + "&score2=" + score2;
+            //window.location.href = "defender.html?score1=" + score1;
             
         });
 
