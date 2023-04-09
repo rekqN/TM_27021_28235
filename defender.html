@@ -96,6 +96,7 @@
         var goalkeeper;
         var round;
         var roundText;
+        var diffText;
 
         var config = {
             type: Phaser.AUTO,
@@ -147,7 +148,7 @@
         }
 
         function create() {
-
+            var diff = Math.abs(score1 - score2);
 
             platform_gk = this.physics.add.staticGroup();
             platform_pk = this.physics.add.staticGroup();
@@ -187,6 +188,7 @@
             score1 = new URLSearchParams(window.location.search).get('score1') ? parseInt(new URLSearchParams(window.location.search).get('score1')) : 0;
             score2 = new URLSearchParams(window.location.search).get('score2') ? parseInt(new URLSearchParams(window.location.search).get('score2')) : 0;
             round = new URLSearchParams(window.location.search).get('round') ? parseInt(new URLSearchParams(window.location.search).get('round')) : 1;
+            
             /*
             var urlParams = new URLSearchParams(window.location.search);
             score1 = urlParams.get('score1');
@@ -208,7 +210,11 @@
             roundText = this.add.text(58, 16, "Round " + round, {
                 fontSize: '30px', fill: '#000000'
             });
-        
+
+            diffText = this.add.text(600, 16, "Diff " + diff, {
+                fontSize: '30px', fill: '#FFFFFF'
+            });
+            
            
             cheatbola = this.add.image(destinoX, destinoY, 'cheatball');
             cheatbola.visible = false;
@@ -343,16 +349,14 @@
                 document.getElementById('button-next').style.display = 'block';
             }, 5000);
 
-            // PASSAR PARA A PROXIMA PAGINA
-
-            document.getElementById('button-next').addEventListener('click', function () {
-            //window.location.href = "chutar.html?score2=" + score2;
             round++;
             
-            var diff = Math.abs(score1-score2);
+            // PASSAR PARA A PROXIMA PAGINA
+            document.getElementById('button-next').addEventListener('click', function () {
+            //window.location.href = "chutar.html?score2=" + score2;
             
             // condicao para acabar 
-            if( (round == 5 && diff != 0) || ( round == 4 && diff == 3) || (round == 5 && dif == 2)){
+            if( (round >= 6 && diff !=0) || (round == 6 && diff > 0) ||  (round == 4 && diff > 2) || (round == 5 && diff > 1) ){
                 if(score1 > score2){
                     window.location.href = "vencedor.html";
                 }
@@ -398,6 +402,7 @@
             else {
                 scoreText.setText(score1 + ":" + score2);
             }
+            
         }
 
 
