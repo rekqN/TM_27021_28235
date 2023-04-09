@@ -65,7 +65,7 @@
 
     <script type="text/javascript">
 
-
+    //function createGame(){
         var player;
         var bola;
         var platform_gk;
@@ -104,8 +104,20 @@
                 update: update
             }
         };
-
+    
         var game = new Phaser.Game(config);
+
+        function playGame(){
+            game.scene.start('main');
+        }
+
+        function createGame(){
+            game.scene.add('main', {
+            preload: preload,
+            create: create,
+            update: update
+        });
+    }
 
         function preload() {
             this.load.image('campo_blue', 'assets/campo_blue.png');
@@ -404,12 +416,32 @@
                 if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
                     goalkeeper.setVelocityY(-300); 
                 }
-            }
-
-            
+            }     
             
         }
 
+        /*
+                function playGame(){
+            game.scene.add('main', {
+                preload: preload,
+                create: create,
+                update: update
+            });
+            game.scene.start('main');
+        }
+
+        for(var i = 0; i < 5; i++){
+            playGame();
+        }
+        */
+
+    //}
+
+    createGame();
+
+    for (var i = 0; i < 5; i++) {
+        playGame();
+    }
 
     </script>
 
