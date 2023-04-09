@@ -348,12 +348,25 @@
             document.getElementById('button-next').addEventListener('click', function () {
             //window.location.href = "chutar.html?score2=" + score2;
             round++;
-            if(round <= 5 || (round >= 5 && score1 == score2)){
+            
+            var diff = Math.abs(score1-score2);
+            
+            // condicao para acabar 
+            if( (round == 5 && diff != 0) || ( round == 4 && diff == 3) || (round == 5 && dif == 2)){
+                if(score1 > score2){
+                    window.location.href = "vencedor.html";
+                }
+                else{
+                    window.location.href = "perdedor.html";
+                }
+            }
+
+            else{
                 window.location.href = "chutar.html?score1=" + score1 + "&score2=" + score2 + "&round="  + round;
             }
-            else{
-                window.location.href = "game.html";
-            }
+
+                
+            
             
         });
 
