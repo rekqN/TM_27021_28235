@@ -93,6 +93,7 @@
             this.load.image('baliza', 'assets/baliza.png');
             this.load.image('gk', 'assets/gk.png');
             this.load.image('seta', 'assets/seta.png');
+            this.load.audio('Apito', ['assets/apito.mp3']);
             this.load.spritesheet('gk_blue', 'assets/gk_blue.png', {frameWidth: 127, frameHeight: 127});
             this.load.spritesheet('player_red', 'assets/player_red.png', {frameWidth: 60, frameHeight: 131})
         }
@@ -107,7 +108,7 @@
             platform_pk.create(400, 625, 'ground').setScale(2).refreshBody();
             this.add.image(400, 300, 'campo');
             shootingArrow = this.add.image(400, 550, 'seta').setOrigin(1, 0.5);
-
+            arbitro = this.sound.add('Apito');
             hasKicked = false;
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_blue');
             bola = this.physics.add.sprite(400, 582, 'ball');
@@ -166,7 +167,7 @@
             bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
 
-
+            arbitro.play();
             goalieAnimation = this.tweens.add({
                 targets: goalkeeper,
                 x: destinoXRedes,
