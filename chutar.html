@@ -180,25 +180,56 @@
             */
 
     //________________________________________________________________________________________
-        const velocidadeGK = 400;
+        const velocidadeGK = 1000;
         let direcao = 0;   
         const tolerancia = 10;
 
         this.anims.create({
                 key: 'moveGkDireita',
-                frames: this.anims.generateFrameNumbers('gk_blue', { start: 4, end: 5 }),
+                frames: this.anims.generateFrameNumbers('gk_blue', { start: 1, end: 2 }),
                 frameRate: 0.5,
                 repeat: 0
             });
 
         this.anims.create({
             key: 'moveGKEsquerda',
-            frames: this.anims.generateFrameNumbers('gk_blue', { start: 1, end: 2 }),
+            frames: this.anims.generateFrameNumbers('gk_blue', { start: 4, end: 5 }),
             frameRate: 0.5,
             repeat: 0
         })
 
+        this.anims.create({
+            key: 'turn',
+            frames: [{ key: 'gk_blue', frame: 0 }],
+            frameRate: 20
+        });
+
+        this.anims.create({
+            key: 'jump',
+                //frames: seq.map(frame => ({ key: 'gk_red', frame: frame })),
+            frames: [{ key: 'gk_blue', frame: 3 }],
+            frameRate: 5,
+            repeat: -1
+        }); 
+
         this.input.keyboard.on('keydown-SPACE', () => {
+
+            this.anims.create({
+                key: 'shoot',
+                frames: this.anims.generateFrameNumbers('player_red', { start: 2, end: 3}),
+                frameRate: 8,
+                
+            });
+
+            player.anims.play('shoot', true);
+            player.setFrame(2);
+            setTimeout(function(){
+                player.setFrame(3);
+
+                setTimeout(function(){
+                    player.setFrame(2);
+                }, 300);
+            }, 20);
 
             const diferencaX = destinoXRedes - goalkeeper.x;
             const diferencaY = destinoYRedes - goalkeeper.y;
@@ -211,18 +242,26 @@
             duration: 1000,
             ease: 'Linear',
             onComplete: function() {
+                goalkeeper.anims.play('turn', true);
                 goalkeeper.anims.stop();
             },
             onStart: function() {
-                if (goalkeeper.x < destinoXRedes) {
+                if (goalkeeper.x > destinoXRedes) {
                     goalkeeper.anims.play('moveGkDireita', true);
                     goalkeeper.setFlipX(false);
-            } else {
-                goalkeeper.anims.play('moveGkEsquerda', true);
-                goalkeeper.setFlipX(true);
+                } 
+                
+            if(goalkeeper.x < destinoXRedes) {
+                goalkeeper.anims.play('moveGkDireita', true);
+                goalkeeper.setFlipX(true);      
+            }
+
+            if(goalkeeper.y > destinoYRedes && goalkeeper.x == destinoXRedes){
+                goalkeeper.anims.play('jump', true);
+
             }
         }
-    });
+    }); 
 });
     //_______________________________________________________________________________________
 
