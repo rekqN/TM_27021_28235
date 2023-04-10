@@ -58,6 +58,9 @@
     <button id="play-button">Jogar novamente</button>
     <button id="quit-button">Sair</button>
     <img src="assets/sad.png">
+    <audio id="derrota">
+        <source src="assets/derrota.mp3" type="audio/mpeg">
+    </audio>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
@@ -69,6 +72,13 @@
             window.close();
         
         });
+
+		window.addEventListener('load', function() {
+			var audio = document.getElementById("derrota");
+			audio.play();
+		});
+	</script>
+
     </script>
    
 </body>

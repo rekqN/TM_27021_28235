@@ -59,6 +59,9 @@
     <button id="play-button">Jogar novamente</button>
     <button id="quit-button">Sair</button>
     <img src="assets/taca.png">
+    <audio id="vitoria">
+        <source src="assets/vitoria.mp3" type="audio/mpeg">
+    </audio>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
@@ -69,6 +72,11 @@
         document.getElementById("quit-button").addEventListener("click", function(){
             window.close();
         });
+
+        window.addEventListener('load', function() {
+			var audio = document.getElementById("vitoria");
+			audio.play();
+		});
     </script>
    
 </body>
