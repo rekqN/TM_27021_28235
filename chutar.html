@@ -113,6 +113,8 @@
             this.load.image('seta', 'assets/seta.png');
             this.load.audio('Goal', ['assets/Goal.mp3']);
             this.load.audio('Apito', ['assets/apito.mp3']);
+            this.load.audio('torcida', ['assets/torcida.mp3']);
+            this.load.audio('errou', ['assets/errou.mp3']);
             this.load.spritesheet('gk_blue', 'assets/gk_blue.png', {frameWidth: 127, frameHeight: 127});
             this.load.spritesheet('player_red', 'assets/player_red.png', {frameWidth: 60, frameHeight: 131})
         }
@@ -129,6 +131,8 @@
             shootingArrow = this.add.image(400, 550, 'seta').setOrigin(1, 0.5);
             audio = this.sound.add('Goal');
             arbitro = this.sound.add('Apito');
+            torcida = this.sound.add('torcida');
+            errou = this.sound.add('errou');
             hasKicked = false;
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_blue');
             bola = this.physics.add.sprite(400, 582, 'ball');
@@ -187,7 +191,7 @@
 
             //bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
-
+            torcida.play();
             arbitro.play();
 
         //________________________________________________________________________________________
@@ -376,7 +380,9 @@
                 audio.play();
             }
             else {
+                errou.play();
                 scoreText.setText(score1 + ":" + score2);
+                
             }
         }
 
