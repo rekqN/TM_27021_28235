@@ -17,17 +17,6 @@
             cursor: pointer;
         }
 
-        /* #cheatriple-button {
-            position: absolute;
-            top: 210px;
-            left: 748px;
-            padding: 5px;
-            background-color: #000000;
-            color: #000000;
-            border-radius: 15px;
-            cursor: pointer;
-        } */
-
         #button-next{
             position: absolute;
             display: none;
@@ -57,21 +46,13 @@
     <div id="game-container"></div>
     <button id="button-next">Next</button>
     <button id="cheatarget-button"></button>
-    <!-- <button id="cheatriple-button"></button> -->
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
-        /*
-        document.getElementById('refresh-button').addEventListener('click', function () {
-            //window.location.href = "chutar.html";
-            location.reload();
-        });
-        */
     </script>
 
     <script type="text/javascript">
 
-    //function createGame(){
         var player;
         var bola;
         var platform_gk;
@@ -117,8 +98,6 @@
         };
     
         var game = new Phaser.Game(config);
-        
-
 
         function preload() {
             this.load.image('campo_blue', 'assets/campo_blue.png');
@@ -159,30 +138,21 @@
             player.setCollideWorldBounds(true);
 
 
-            destinoX = Phaser.Math.Between(175, 630);   // 100, 700
-            destinoY = Phaser.Math.Between(112, 313);    // 40, 305
+            destinoX = Phaser.Math.Between(175, 630);
+            destinoY = Phaser.Math.Between(112, 313);
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY);
             
 
             velocidade = getRandomInt(400, 1000);
             duracao = distancia / velocidade * 1000;
 
-            // RECEBER DA PAGINA ANTERIOR
-            //score1 = new URLSearchParams(window.location.search).get('score1');
             score1 = new URLSearchParams(window.location.search).get('score1') ? parseInt(new URLSearchParams(window.location.search).get('score1')) : 0;
             score2 = new URLSearchParams(window.location.search).get('score2') ? parseInt(new URLSearchParams(window.location.search).get('score2')) : 0;
             round = new URLSearchParams(window.location.search).get('round') ? parseInt(new URLSearchParams(window.location.search).get('round')) : 1;
             
-            /*
-            var urlParams = new URLSearchParams(window.location.search);
-            score1 = urlParams.get('score1');
-            score2 = urlParams.get('score2');
-            */
-            //audio.setStartDelay(duracao);
             var rectangle = this.add.graphics();
             rectangle.fillStyle(0xFFffff, 1); 
             rectangle.fillRoundedRect(344, 10, 120, 70, 10);
-            //rectangle.setCornerRadius(20);
             scoreText = this.add.text(360, 24, score1 + ":" + score2, {
                 fontSize: '50px', fill: '#000000'
             });
@@ -213,8 +183,6 @@
             }
 
             
-            
-            
             this.tweens.add({
                 targets: bola,
                 x: destinoX,
@@ -222,21 +190,6 @@
                 duration: duracao,
                 delay: 2000,
                 ease: 'Linear',
-                /*
-                onUpdate: function () {
-                    if (Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY) < 10) {   
-                        this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
-                    }
-                },
-                */
-               /*
-               onUpdate: function(){
-                
-               if(distancia <= 20){
-                this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
-               }
-            },
-            */
                 onComplete: function () {
                     
                     update_score(bola);
@@ -244,17 +197,6 @@
                 }
             });
 
-            /*
-            setTimeout(() => {
-                this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
-            }, 2000 + duracao);
-            */
-
-            /*
-            if(distancia < 20){
-                this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
-            }
-            */
             torcida.play();
             arbitro.play();
             
@@ -304,7 +246,6 @@
             
             this.anims.create({
                 key: 'jump',
-                //frames: seq.map(frame => ({ key: 'gk_red', frame: frame })),
                 frames: [{ key: 'gk_red', frame: 3 }],
                 frameRate: 5,
                 repeat: -1
@@ -317,26 +258,19 @@
             this.physics.add.collider(goalkeeper, platform_gk);
             this.physics.add.collider(bola, platform_gk);
             this.physics.add.collider(bola, platform_pk);
-            //this.physics.add.collider(cristiano, platform_pk);
-            //this.physics.add.collider(player, platform_pk);
-        
-            
-        
             
 
             setTimeout(() => {
                 document.getElementById('button-next').style.display = 'block';
             }, 5000);
 
-            
 
             round++;
+
             
-            // PASSAR PARA A PROXIMA PAGINA
             document.getElementById('button-next').addEventListener('click', function () {
-            //window.location.href = "chutar.html?score2=" + score2;
             var diff = Math.abs(score1 - score2);
-            // condicao para acabar 
+
             if( (round >= 6 && diff > 0) ||  (round == 5 && diff > 1) || (round == 4 && diff > 2) ){
                 if(score1 > score2){
                     window.location.href = "vencedor.html";
@@ -354,18 +288,14 @@
             
             
         });
+        }
 
-
-        } // fim da função create
-
-    //   if(Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY) < 20){
         function hitBola(goalkeeper, bola) {
             goalkeeper.physics.pause();
-            //bola.physics.pause();
             goalkeeper.anims.play('turn');
             Defended = true;
         }
-    // }
+
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
@@ -373,7 +303,6 @@
         }
 
         function update_score(bola) {
-            //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
             if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
                 score2++;
                 scoreText.setText(score1 + ":" + score2);
@@ -388,19 +317,7 @@
             
         }
 
-
-        /*
-        setTimeout(function alterar(){
-            window.location.href = "chutar.html";
-        }, 3000);
-        */
-
         function update(time, delta) {
-            /*
-            if (Defended) {
-                return;
-            }
-            */
             var distance = Phaser.Math.Distance.Between(bola.x, bola.y, destinoX, destinoY);
 
             if (distance <= 40) {
@@ -412,14 +329,13 @@
 
             this.tempoDecorrido += delta;
 
-            //  /*
             if(cursors.up.isDown){
                 goalkeeper.setVelocityY(-100);
 
                 goalkeeper.anims.play('jump', true);
 
             }
-            //  */
+
             if (cursors.left.isDown) {
                 goalkeeper.setVelocityX(-200);
 
@@ -436,25 +352,21 @@
                 goalkeeper.anims.play('turn');
             }
 
-        //   /*
+
             if (cursors.up.isDown && !cursors.left.isDown && !cursors.right.isDown && !cursors.down.isDown) {
                 goalkeeper.setVelocityY(-200);
 
                 goalkeeper.anims.play('jump', true);
                 
             }
-        //   */
 
-        //   /*
             if(cursors.up.isDown && goalkeeper.body.touching.down){
                 goalkeeper.setVelocityY(-330);
             }
-        //   */
+
             if(goalkeeper.y < 170){
                 goalkeeper.setY(170);
             }
-
-            // fazer com que o gk só salta uma vez: 
 
             if(goalkeeper.body.touching.down){
                 this.podePular = true;
@@ -473,23 +385,6 @@
             }     
             
         }
-
-        /*
-                function playGame(){
-            game.scene.add('main', {
-                preload: preload,
-                create: create,
-                update: update
-            });
-            game.scene.start('main');
-        }
-
-        for(var i = 0; i < 5; i++){
-            playGame();
-        }
-        */
-
-    //}
 
     createGame();
 

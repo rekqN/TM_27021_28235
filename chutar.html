@@ -97,7 +97,6 @@
         let estadio;
         let audio;
         let arbitro;
-        //let shootingIntensity = 0;
 
 
         let game = new Phaser.Game(config);
@@ -139,19 +138,12 @@
             player = this.physics.add.sprite(370, 535, 'player_red');
             goalkeeper.setBounce(0.2);
             player.setCollideWorldBounds(true);
-            
-            // linha = new Phaser.Geom.Line(shootingArrow.x, shootingArrow.y, 0, 0);
-            // Phaser.Geom.Line.SetToAngle(linha, shootingArrow.x, shootingArrow.y, 90, 300);
-            // this.graphics = this.add.graphics();
-            // this.graphics.lineStyle(2, 0xffffff);
-            // this.graphics.strokeLineShape(linha);
 
             strengthBar = this.add.rectangle(750, 550, 15, 100, 0xff0000).setOrigin(1);
             
 
             clock = this.time.addEvent({ delay: 0, loop: false });
             startTime = clock.getElapsed();
-            //gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
             spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
             
@@ -161,17 +153,10 @@
             velocidade = getRandomInt(100, 1000);
             duracao = distancia / velocidade * 1000;
 
-            // RECEBER DA PAGINA ANTERIOR
-
-            //score2 = new URLSearchParams(window.location.search).get('score2');
             score1 = new URLSearchParams(window.location.search).get('score1') ? parseInt(new URLSearchParams(window.location.search).get('score1')) : 0;
             score2 = new URLSearchParams(window.location.search).get('score2') ? parseInt(new URLSearchParams(window.location.search).get('score2')) : 0;
             round = new URLSearchParams(window.location.search).get('round') ? parseInt(new URLSearchParams(window.location.search).get('round')) : 1;
-            /*
-            var urlParams = new URLSearchParams(window.location.search);
-            score1 = urlParams.get('score1');
-            score2 = urlParams.get('score2');
-            */
+
             let rectangle = this.add.graphics();
             rectangle.fillStyle(0xFFffff, 1); 
             rectangle.fillRoundedRect(344, 10, 120, 70, 10);
@@ -188,7 +173,6 @@
                 fontSize: '30px', fill: '#000000'
             });
 
-
             
             var botao1 = document.getElementById('cheatstatic-button');
             botao1.addEventListener('click', () => {
@@ -199,14 +183,11 @@
                 destinoXRedes = 400;
                 destinoYRedes = 265;
             }
-            
 
-            //bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
             torcida.play();
             arbitro.play();
 
-        //________________________________________________________________________________________
             const velocidadeGK = 1000;
             let direcao = 0;   
             const tolerancia = 10;
@@ -245,13 +226,13 @@
                 destinoYBola = y;
 
                 distancia = Phaser.Math.Distance.Between(400, 581, destinoXBola, destinoYBola);
-                velocidade = strengthBar.displayHeight * 1.5;
+                velocidade = 95000 / strengthBar.displayHeight;
 
                 shootingBallAnimation = this.tweens.add({
                     targets: bola,
                     x: destinoXBola,
                     y: destinoYBola,
-                    duration: 2000,
+                    duration: velocidade,
                     ease: 'Linear',
                     onComplete: function () {
                         update_score(bola);
@@ -307,7 +288,6 @@
                     }
                 }); 
             });
-        //_______________________________________________________________________________________
 
             shootingArrowAnimation = this.tweens.add({
                 targets: shootingArrow,
@@ -364,27 +344,12 @@
             let x = 0;
             let y = 0;
 
-            x = 400 - (Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight * 2.5);
-            y = 581 - (Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight * 1.75);
+            x = 400 - (Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight * 2.15);
+            y = 581 - (Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight * 1.55);
             return {x, y};
         }
-
-        // function onSpaceKeyPress(scene){           
-        //     if(!hasKicked){
-        //         hasKicked = true;
-        //         strengthBarAnimation.stop();
-        //         rotatingArrowAnimation.stop();
-        //         //goalieAnimation.play();
-                
-        //         //strengthBar.start();
-        //         //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
-        //         calculateBallPosition(destinoXBola, destinoYBola, strengthBar);
-        //     }
-        // }
-
         
         function update_score(bola) {
-            //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
             if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
                 score1++;
                 scoreText.setText(score1 + ":" + score2);
@@ -405,10 +370,6 @@
             if(spaceKey.isDown){
                 shootingArrowAnimation.stop();
                 strengthBarAnimation.play();
-                // if(shiftKey.isDown){
-                //     //goalieAnimation.play();
-                //     onSpaceKeyPress(this, bola);
-                // }
             }
 
             let distance = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
