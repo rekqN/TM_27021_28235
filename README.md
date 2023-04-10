@@ -11,3 +11,5 @@ No entanto, caso chegue ao fim a ronda 5, e haja um empate no resultado, será a
 
 Para ser considerado golo, a bola terá que entrar dentro da baliza, sem que o guarda-redes tivesse defendido a bola antes.
 O objetivo do jogo é terminar a sequência de rondas com mais pontos que o adversário.
+
+Link do jogo: penaltyduelmasters.netlify.app
