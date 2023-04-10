@@ -17,7 +17,7 @@
             cursor: pointer;
         }
 
-        #cheatriple-button {
+        /* #cheatriple-button {
             position: absolute;
             top: 210px;
             left: 748px;
@@ -26,13 +26,13 @@
             color: #000000;
             border-radius: 15px;
             cursor: pointer;
-        }
+        } */
 
         #button-next{
             position: absolute;
             display: none;
-            top: 500px;
-            left: 640px;
+            top: 10px;
+            left: 680px;
             padding: 25px;
             background-color: #ffffff;
             color: #000000;
@@ -57,7 +57,7 @@
     <div id="game-container"></div>
     <button id="button-next">Next</button>
     <button id="cheatarget-button"></button>
-    <button id="cheatriple-button"></button>
+    <!-- <button id="cheatriple-button"></button> -->
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
@@ -423,12 +423,7 @@
                 if(!this.colliderGkBola){
                     this.colliderGkBola = this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
                 }
-
-            if(this.tempoDecorrido > 2000 + duracao){
-                this.physics.world.removeCollider(this.colliderGkBola);
-                this.colliderGkBola = null;
             }
-        }
 
             this.tempoDecorrido += delta;
 

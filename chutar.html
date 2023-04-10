@@ -10,11 +10,22 @@
             margin: 0;
         }
 
+        #cheatarget-button {
+            position: absolute;
+            top: 210px;
+            left: 2px;
+            padding: 5px;
+            background-color: #000000;
+            color: #000000;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
         #button-next{
             position: absolute;
             display: none;
-            top: 500px;
-            left: 640px;
+            top: 10px;
+            left: 680px;
             padding: 25px;
             background-color: #ffffff;
             color: #000000;
@@ -29,6 +40,7 @@
 
 <body>
     <div id="game-container"></div>
+    <button id="cheatarget-button"></button>
     <button id="button-next">Next</button>
     <script type="text/javascript">
 
@@ -59,7 +71,7 @@
         var score2 = 0;
         let gameOver = false;
         let scoreText;
-        let destinoXBola = 0
+        let destinoXBola = 0;
         let destinoYBola = 0;
         let destinoXRedes = 0;
         let destinoYRedes = 0;
@@ -67,11 +79,12 @@
         let duracao = 0;
         let bola;
         let shootingArrow;
-        let rotatingArrowAnimation = 0;
+        let shootingArrowAnimation;
         let shootBall;
         let goalieAnimation;
         let hasKicked;
         let spaceKey;
+        let shiftKey;
         let startTime;
         let gameTime;
         let elapsedTime;
@@ -80,6 +93,10 @@
         let strengthBarAnimation;
         let round;
         let roundText;
+        let Defended = false;
+        let estadio;
+        let audio;
+        let arbitro;
         //let shootingIntensity = 0;
 
 
@@ -87,12 +104,14 @@
 
         function preload() {
             this.load.image('campo', 'assets/campo.png');
+            this.load.image('campogolo', 'assets/campogolo.png');
             this.load.image('ground', 'assets/platform.png');
             this.load.image('ball', 'assets/ball.png');
             this.load.image('seta', 'assets/seta.png');
             this.load.image('baliza', 'assets/baliza.png');
             this.load.image('gk', 'assets/gk.png');
             this.load.image('seta', 'assets/seta.png');
+            this.load.audio('Goal', ['assets/Goal.mp3']);
             this.load.audio('Apito', ['assets/apito.mp3']);
             this.load.spritesheet('gk_blue', 'assets/gk_blue.png', {frameWidth: 127, frameHeight: 127});
             this.load.spritesheet('player_red', 'assets/player_red.png', {frameWidth: 60, frameHeight: 131})
@@ -106,8 +125,9 @@
             platform_pk = this.physics.add.staticGroup();
             platform_gk.create(400, 360, 'ground').setScale(2).refreshBody();
             platform_pk.create(400, 625, 'ground').setScale(2).refreshBody();
-            this.add.image(400, 300, 'campo');
+            estadio = this.add.sprite(400, 300, 'campo');
             shootingArrow = this.add.image(400, 550, 'seta').setOrigin(1, 0.5);
+            audio = this.sound.add('Goal');
             arbitro = this.sound.add('Apito');
             hasKicked = false;
             goalkeeper = this.physics.add.sprite(400, 265, 'gk_blue');
@@ -129,6 +149,7 @@
             startTime = clock.getElapsed();
             //gameTime = this.add.text(300 , 16, 'Time: ' + startTime, { fontSize: '64px', fill: '#FFFFFF' });
             spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
             
             destinoXRedes = Phaser.Math.Between(185, 615);
             destinoYRedes = Phaser.Math.Between(125, 240);
@@ -164,123 +185,115 @@
             });
 
 
-            bola.setCollideWorldBounds(true);
+            //bola.setCollideWorldBounds(true);
             player.setCollideWorldBounds(true);
 
             arbitro.play();
-            /*
-            goalieAnimation = this.tweens.add({
-                targets: goalkeeper,
-                x: destinoXRedes,
-                y: destinoYRedes,
-                duration: duracao,
-                ease: 'Linear', 
-            });
-            goalieAnimation.stop();
-            */
 
-    //________________________________________________________________________________________
-        const velocidadeGK = 1000;
-        let direcao = 0;   
-        const tolerancia = 10;
+        //________________________________________________________________________________________
+            const velocidadeGK = 1000;
+            let direcao = 0;   
+            const tolerancia = 10;
 
-        this.anims.create({
-                key: 'moveGkDireita',
-                frames: this.anims.generateFrameNumbers('gk_blue', { start: 1, end: 2 }),
+            this.anims.create({
+                    key: 'moveGkDireita',
+                    frames: this.anims.generateFrameNumbers('gk_blue', { start: 1, end: 2 }),
+                    frameRate: 0.5,
+                    repeat: 0
+                });
+
+            this.anims.create({
+                key: 'moveGKEsquerda',
+                frames: this.anims.generateFrameNumbers('gk_blue', { start: 4, end: 5 }),
                 frameRate: 0.5,
                 repeat: 0
-            });
+            })
 
-        this.anims.create({
-            key: 'moveGKEsquerda',
-            frames: this.anims.generateFrameNumbers('gk_blue', { start: 4, end: 5 }),
-            frameRate: 0.5,
-            repeat: 0
-        })
-
-        this.anims.create({
-            key: 'turn',
-            frames: [{ key: 'gk_blue', frame: 0 }],
-            frameRate: 5
-        });
-
-        this.anims.create({
-            key: 'jump',
-                //frames: seq.map(frame => ({ key: 'gk_red', frame: frame })),
-            frames: [{ key: 'gk_blue', frame: 3 }],
-            frameRate: 5,
-            repeat: -1
-        }); 
-
-        
-
-        this.input.keyboard.on('keydown-SPACE', () => {
-
-           
             this.anims.create({
-                key: 'shoot',
-                frames: this.anims.generateFrameNumbers('player_red', { start: 2, end: 3}),
-                frameRate: 8,
-                
+                key: 'turn',
+                frames: [{ key: 'gk_blue', frame: 0 }],
+                frameRate: 5
             });
 
-            player.anims.play('shoot', true);
-            player.setFrame(2);
-            setTimeout(function(){
-                player.setFrame(3);
+            this.anims.create({
+                key: 'jump',
+                frames: [{ key: 'gk_blue', frame: 3 }],
+                frameRate: 5,
+                repeat: -1
+            }); 
 
+            this.input.keyboard.on('keydown-SHIFT', () => {
+                strengthBarAnimation.stop();
+                const {x, y} = calculateBallPosition(strengthBar);
+                destinoXBola = x;
+                destinoYBola = y;
+
+                distancia = Phaser.Math.Distance.Between(400, 581, destinoXBola, destinoYBola);
+                velocidade = strengthBar.displayHeight * 1.5;
+
+                shootingBallAnimation = this.tweens.add({
+                    targets: bola,
+                    x: destinoXBola,
+                    y: destinoYBola,
+                    duration: 2000,
+                    ease: 'Linear',
+                    onComplete: function () {
+                        update_score(bola);
+                    }
+                });
+
+                this.anims.create({
+                    key: 'shoot',
+                    frames: this.anims.generateFrameNumbers('player_red', { start: 2, end: 3}),
+                    frameRate: 8,  
+                });
+
+                player.anims.play('shoot', true);
+                player.setFrame(2);
                 setTimeout(function(){
-                    player.setFrame(2);
-                }, 300);
-            }, 20);
+                    player.setFrame(3);
+
+                    setTimeout(function(){
+                        player.setFrame(2);
+                    }, 300);
+                }, 20);
 
 
-            const diferencaX = destinoXRedes - goalkeeper.x;
-            const diferencaY = destinoYRedes - goalkeeper.y;
-            direcao = Phaser.Math.Angle.Between(goalkeeper.x, goalkeeper.y, destinoXRedes, destinoYRedes);
-            
-            const moveTween = this.tweens.add({
-            targets: goalkeeper,
-            x: destinoXRedes,
-            y: destinoYRedes,
-            duration: 1000,
-            ease: 'Linear',
-            onComplete: function() {
-                goalkeeper.anims.play('turn', true);
-                goalkeeper.anims.stop();
-            },
-            onStart: function() {
-                if (goalkeeper.x > destinoXRedes) {
-                    goalkeeper.anims.play('moveGkDireita', true);
-                    goalkeeper.setFlipX(false);
-                } 
+                const diferencaX = destinoXRedes - goalkeeper.x;
+                const diferencaY = destinoYRedes - goalkeeper.y;
+                direcao = Phaser.Math.Angle.Between(goalkeeper.x, goalkeeper.y, destinoXRedes, destinoYRedes);
                 
-            if(goalkeeper.x < destinoXRedes) {
-                goalkeeper.anims.play('moveGkDireita', true);
-                goalkeeper.setFlipX(true);      
-            }
+                const moveTween = this.tweens.add({
+                    targets: goalkeeper,
+                    x: destinoXRedes,
+                    y: destinoYRedes,
+                    duration: 1000,
+                    ease: 'Linear',
+                    onComplete: function() {
+                        goalkeeper.anims.play('turn', true);
+                        goalkeeper.anims.stop();
+                    },
+                    onStart: function() {
+                        if (goalkeeper.x > destinoXRedes) {
+                            goalkeeper.anims.play('moveGkDireita', true);
+                            goalkeeper.setFlipX(false);
+                        } 
+                        
+                        if(goalkeeper.x < destinoXRedes) {
+                            goalkeeper.anims.play('moveGkDireita', true);
+                            goalkeeper.setFlipX(true);      
+                        }
 
-            if(goalkeeper.y > destinoYRedes && goalkeeper.x == destinoXRedes){
-                goalkeeper.anims.play('jump', true);
+                        if(goalkeeper.y > destinoYRedes && goalkeeper.x == destinoXRedes){
+                            goalkeeper.anims.play('jump', true);
 
-            }
-        }
-    }); 
+                        }
+                    }
+                }); 
+            });
+        //_______________________________________________________________________________________
 
-});
-    //_______________________________________________________________________________________
-
-            // shootBall = this.tweens.add({
-            //     targets: bola,
-            //     x: destinoXBola,
-            //     y: destinoYBola,
-            //     duration: duracao,
-            //     ease: 'Linear',
-                
-            // });
-            // shootBall.stop();
-
-            rotatingArrowAnimation = this.tweens.add({
+            shootingArrowAnimation = this.tweens.add({
                 targets: shootingArrow,
                 angle: { from: 40, to: 140 },
                 duration: 800,
@@ -296,45 +309,12 @@
                 repeat: -1,
                 ease: 'Sine.easeInOut'
             });
-            // strengthBar.stop();
-
-            /*
-            this.anims.create({
-                key: 'left',
-                frames: [{ key: 'ball', frame: 0 }],
-                frameRate: 10,
-                repeat: -1
-            });
-
-
-            this.anims.create({
-                key: 'turn',
-                frames: [{ key: 'ball', frame: 0 }],
-                frameRate: 20
-            });
-
-
-            this.anims.create({
-                key: 'right',
-                frames: [{ key: 'ball', frame: 0 }],
-                frameRate: 10,
-                repeat: -1
-            });
-            */
-
-            //  Input Events
-            cursors = this.input.keyboard.createCursorKeys();
+            strengthBarAnimation.stop();
 
             this.physics.add.collider(goalkeeper, platform_gk);
             this.physics.add.collider(bola, platform_gk);
             this.physics.add.collider(bola, platform_pk);
             this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
-
-            this.pointerText = this.add.text(0, 0, '');
-            this.input.on('pointermove', (pointer) => {
-                this.pointerText.setPosition(pointer.x+10, pointer.y-10);
-                this.pointerText.setText(`x: ${pointer.x}, y: ${pointer.y}`);
-            })
 
             setTimeout(() => {
                 document.getElementById('button-next').style.display = 'block';
@@ -352,9 +332,9 @@
         }
 
         function hitBola(goalkeeper, bola) {
-            this.physics.pause();
-            goalkeeper.setTint(0xff0000);
-            bola.anims.play('turn');
+            goalkeeper.physics.pause();
+            //bola.physics.pause();
+            goalkeeper.anims.play('turn');
             Defended = true;
         }
 
@@ -364,6 +344,29 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
+        function calculateBallPosition(strengthBar){
+            let x = 0;
+            let y = 0;
+
+            x = 400 - (Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight * 2.5);
+            y = 581 - (Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight * 1.75);
+            return {x, y};
+        }
+
+        // function onSpaceKeyPress(scene){           
+        //     if(!hasKicked){
+        //         hasKicked = true;
+        //         strengthBarAnimation.stop();
+        //         rotatingArrowAnimation.stop();
+        //         //goalieAnimation.play();
+                
+        //         //strengthBar.start();
+        //         //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
+        //         calculateBallPosition(destinoXBola, destinoYBola, strengthBar);
+        //     }
+        // }
+
+        
         function update_score(bola) {
             //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
             if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
@@ -377,70 +380,25 @@
             }
         }
 
-        function calculateBallPositionAndSpeed(strengthBar){
-            let destinoXBola = Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight;
-            let destinoYBola = Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight;
-
-            distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
-            velocidade = Phaser.Math.Distance.Between(400, 581, destinoXBola, destinoYBola) / 3;
-            duracao = distancia / velocidade;
-        }
-
-        function onSpaceKeyPress(scene){           
-            if(!hasKicked){
-                hasKicked = true;
-                strengthBarAnimation.stop();
-                rotatingArrowAnimation.stop();
-                //goalieAnimation.play();
-                
-                //strengthBar.start();
-                //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
-                calculateBallPositionAndSpeed(strengthBar);
-                /*
-                shootBall = scene.tweens.add({
-                    targets: bola,
-                    x: destinoXBola,
-                    y: destinoYBola,
-                    duration: duracao,
-                    ease: 'Linear',
-                    
-                });
-                */
-            }
-        }
-
-        
-        function update_score(bola) {
-            //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
-            if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
-                score[1]++;
-                scoreText.setText(score[0] + ":" + score[1]);
-                estadio.setTexture('campogolo_blue');
-                audio.play();
-            }
-            else {
-                scoreText.setText(score[0] + ":" + score[1]);
-            }
-        }
 
 
-
-        function update(time, delta) {
+        function update() {
 
             if(spaceKey.isDown){
-                //goalieAnimation.play();
-                onSpaceKeyPress(this, bola);
+                shootingArrowAnimation.stop();
+                strengthBarAnimation.play();
+                // if(shiftKey.isDown){
+                //     //goalieAnimation.play();
+                //     onSpaceKeyPress(this, bola);
+                // }
             }
 
-            /*
-            if (Defended) {
-                return;
+            let distance = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
+            if (distance <= 10) {
+                if(!this.colliderGkBola){
+                    this.colliderGkBola = this.physics.add.collider(goalkeeper, bola, hitBola, null, this);
+                }
             }
-            */
-
-            // if (cursors.up.isDown && bola.body.touching.down) {
-            //     bola.setVelocityY(-630);
-            // }
         }
     </script>
 </body>
