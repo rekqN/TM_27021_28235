@@ -119,19 +119,6 @@
         var game = new Phaser.Game(config);
         
 
-        /*
-        function playGame(){
-            game.scene.start('main');
-        }
-
-        function createGame(){
-            game.scene.add('main', {
-            preload: preload,
-            create: create,
-            update: update
-        });
-    }
-    */
 
         function preload() {
             this.load.image('campo_blue', 'assets/campo_blue.png');
@@ -160,14 +147,7 @@
             bola = this.physics.add.sprite(400, 582, 'ball');
             player = this.physics.add.sprite(370, 535, 'player_blue');
 
-            this.text = this.add.text(0, 0, '');
-            this.input.on('pointermove', (pointer) => {
-                this.text.setPosition(pointer.x + 10, pointer.y - 10);
-                this.text.setText(`x: ${pointer.x}, y: ${pointer.y}`);
-            });
-
             
-
             goalkeeper.setBounce(0.2);
             goalkeeper.setCollideWorldBounds(true);
             bola.setCollideWorldBounds(true);
@@ -334,12 +314,8 @@
             //this.physics.add.collider(player, platform_pk);
         
             
-
-            this.text = this.add.text(0, 0, '');
-            this.input.on('pointermove', (pointer) => {
-                this.text.setPosition(pointer.x + 10, pointer.y - 10);
-                this.text.setText(`x: ${pointer.x}, y: ${pointer.y}`);
-            });
+        
+            
 
             setTimeout(() => {
                 document.getElementById('button-next').style.display = 'block';
