@@ -178,15 +178,15 @@
             goalieAnimation.stop();
 
 
-            shootBall = this.tweens.add({
-                targets: bola,
-                x: destinoXBola,
-                y: destinoYBola,
-                duration: duracao,
-                ease: 'Linear',
+            // shootBall = this.tweens.add({
+            //     targets: bola,
+            //     x: destinoXBola,
+            //     y: destinoYBola,
+            //     duration: duracao,
+            //     ease: 'Linear',
                 
-            });
-            shootBall.stop();
+            // });
+            // shootBall.stop();
 
             rotatingArrowAnimation = this.tweens.add({
                 targets: shootingArrow,
@@ -285,27 +285,33 @@
             }
         }
 
-        function calculateBallPositionAndSpeed(destinoXBola, destinoYBola, strengthBar){
-            console.log(strengthBar.displayHeight);
-            destinoXBola = Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight;
-            destinoYBola = Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight;
+        function calculateBallPositionAndSpeed(strengthBar){
+            let destinoXBola = Math.cos(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight;
+            let destinoYBola = Math.sin(Phaser.Math.DegToRad(shootingArrow.angle)) * strengthBar.displayHeight;
 
             distancia = Phaser.Math.Distance.Between(bola.x, bola.y, destinoXBola, destinoYBola);
-            velocidade = getRandomInt(10, 100); //Phaser.Math.Distance.Between(linha.x, linha.y, DestinoXBola, DestinoYBola) / 3;
-            duracao = distancia / velocidade * 100;
+            velocidade = Phaser.Math.Distance.Between(400, 581, destinoXBola, destinoYBola) / 3;
+            duracao = distancia / velocidade;
         }
 
         function onSpaceKeyPress(scene){           
             if(!hasKicked){
                 hasKicked = true;
-                //strengthBarAnimation.stop();
+                strengthBarAnimation.stop();
                 rotatingArrowAnimation.stop();
                 goalieAnimation.play();
                 
                 //strengthBar.start();
                 //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
-                calculateBallPositionAndSpeed(destinoXBola, destinoYBola, linha);
-                shootBall.play();
+                calculateBallPositionAndSpeed(strengthBar);
+                shootBall = scene.tweens.add({
+                    targets: bola,
+                    x: destinoXBola,
+                    y: destinoYBola,
+                    duration: duracao,
+                    ease: 'Linear',
+                    
+                });
             }
         }
 
@@ -328,14 +334,7 @@
 
             if(spaceKey.isDown){
                 //goalieAnimation.play();
-                onSpaceKeyPress(this);   
-            }
-
-            /*
-            if (Phaser.Input.Keyboard.JustDown(spaceKey)) {
-                elapsedTime = clock.getElapsed() - startTime;
-                gameTime.setText('Time: ' + elapsedTime);
-                
+                onSpaceKeyPress(scene, bola);
             }
 
             /*
@@ -344,20 +343,10 @@
             }
             */
 
-            if (cursors.up.isDown && bola.body.touching.down) {
-                bola.setVelocityY(-630);
-            }
-
-            /*
-            let arrowEndX = shootingArrow.x + Math.cos(shootingArrow.rotation) * 100;
-            let arrowEndY = shootingArrow.y + Math.sin(shootingArrow.rotation) * 100;
-            line.setTo(shootingArrow.x, shootingArrow.y, arrowEndX, arrowEndY);
-            */
+            // if (cursors.up.isDown && bola.body.touching.down) {
+            //     bola.setVelocityY(-630);
+            // }
         }
-
-
     </script>
-
 </body>
-
 </html>
