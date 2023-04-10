@@ -201,7 +201,7 @@
         this.anims.create({
             key: 'turn',
             frames: [{ key: 'gk_blue', frame: 0 }],
-            frameRate: 20
+            frameRate: 5
         });
 
         this.anims.create({
@@ -212,8 +212,11 @@
             repeat: -1
         }); 
 
+        
+
         this.input.keyboard.on('keydown-SPACE', () => {
 
+           
             this.anims.create({
                 key: 'shoot',
                 frames: this.anims.generateFrameNumbers('player_red', { start: 2, end: 3}),
@@ -230,6 +233,7 @@
                     player.setFrame(2);
                 }, 300);
             }, 20);
+
 
             const diferencaX = destinoXRedes - goalkeeper.x;
             const diferencaY = destinoYRedes - goalkeeper.y;
@@ -262,6 +266,7 @@
             }
         }
     }); 
+
 });
     //_______________________________________________________________________________________
 
@@ -391,6 +396,7 @@
                 //strengthBar.start();
                 //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
                 calculateBallPositionAndSpeed(strengthBar);
+                /*
                 shootBall = scene.tweens.add({
                     targets: bola,
                     x: destinoXBola,
@@ -399,6 +405,7 @@
                     ease: 'Linear',
                     
                 });
+                */
             }
         }
 
