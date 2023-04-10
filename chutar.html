@@ -168,6 +168,7 @@
             player.setCollideWorldBounds(true);
 
             arbitro.play();
+            /*
             goalieAnimation = this.tweens.add({
                 targets: goalkeeper,
                 x: destinoXRedes,
@@ -176,7 +177,54 @@
                 ease: 'Linear', 
             });
             goalieAnimation.stop();
+            */
 
+    //________________________________________________________________________________________
+        const velocidadeGK = 400;
+        let direcao = 0;   
+        const tolerancia = 10;
+
+        this.anims.create({
+                key: 'moveGkDireita',
+                frames: this.anims.generateFrameNumbers('gk_blue', { start: 4, end: 5 }),
+                frameRate: 0.5,
+                repeat: 0
+            });
+
+        this.anims.create({
+            key: 'moveGKEsquerda',
+            frames: this.anims.generateFrameNumbers('gk_blue', { start: 1, end: 2 }),
+            frameRate: 0.5,
+            repeat: 0
+        })
+
+        this.input.keyboard.on('keydown-SPACE', () => {
+
+            const diferencaX = destinoXRedes - goalkeeper.x;
+            const diferencaY = destinoYRedes - goalkeeper.y;
+            direcao = Phaser.Math.Angle.Between(goalkeeper.x, goalkeeper.y, destinoXRedes, destinoYRedes);
+            
+            const moveTween = this.tweens.add({
+            targets: goalkeeper,
+            x: destinoXRedes,
+            y: destinoYRedes,
+            duration: 1000,
+            ease: 'Linear',
+            onComplete: function() {
+                goalkeeper.anims.stop();
+            },
+            onStart: function() {
+                if (goalkeeper.x < destinoXRedes) {
+                    goalkeeper.anims.play('moveGkDireita', true);
+                    goalkeeper.setFlipX(false);
+            } else {
+                goalkeeper.anims.play('moveGkEsquerda', true);
+                goalkeeper.setFlipX(true);
+            }
+        }
+    });
+});
+    //_______________________________________________________________________________________
 
             // shootBall = this.tweens.add({
             //     targets: bola,
@@ -299,7 +347,7 @@
                 hasKicked = true;
                 strengthBarAnimation.stop();
                 rotatingArrowAnimation.stop();
-                goalieAnimation.play();
+                //goalieAnimation.play();
                 
                 //strengthBar.start();
                 //scene.physics.velocityFromRotation(shootingArrow.angle, 400, bola.body.velocity);
@@ -315,6 +363,7 @@
             }
         }
 
+        
         function update_score(bola) {
             //if (Defended == false && bola.x == destinoX && bola.y == destinoY && bola.x >= 183 && bola.x <= 622 && bola.y >= 118 && bola.y <= 307) {
             if (Defended == false && bola.x >= 175 && bola.x <= 630 && bola.y >= 112 && bola.y <= 313) {
