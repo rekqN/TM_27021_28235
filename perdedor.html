@@ -32,18 +32,39 @@
             cursor: pointer;
         }
 
+        #quit-button {
+            width: 200px;
+            height: 50px;
+            margin: 0 auto;
+            position: absolute;
+            top: 340px;
+            padding: 30px;
+            background-color: #2468f0;
+            color: #ffffff;
+            display: flex;
+            font-size: 22px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20%;
+            cursor: pointer;
+        }
         
     </style>
 </head>
 
 <body>
     <h1>Perdeu</h1>
-    <button id="play-button">Jogar</button>
+    <button id="play-button">Jogar novamente</button>
+    <button id="quit-button">Sair</button>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
         document.getElementById("play-button").addEventListener("click", function(){
             window.location.href = "chutar.html";
+        
+        });
+        document.getElementById("quit-button").addEventListener("click", function(){
+            window.close();
         
         });
     </script>
