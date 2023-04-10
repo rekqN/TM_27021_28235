@@ -59,6 +59,9 @@
     <h1>Penalty Duel Masters</h1>
     <button id="play-button">Jogar</button>
     <button id="quit-button">Sair</button>
+    <audio id="thechampions">
+        <source src="assets/thechampions.mp3" type="audio/mpeg">
+    </audio>
     <script src="phaser.min.js"></script>
     <script src="game.js"></script>
     <script>
@@ -70,6 +73,11 @@
             window.close();
         
         });
+
+        window.addEventListener('load', function() {
+			var audio = document.getElementById("thechampions");
+			audio.play();
+		});
     </script>
    
 </body>
